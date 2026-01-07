@@ -1,2 +1,2 @@
-package com.example.secretsanta.data.remote.firebase
+package com.example.secretsanta.data.remote.dto
 
