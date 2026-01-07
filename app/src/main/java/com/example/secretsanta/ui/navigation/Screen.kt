@@ -1,4 +1,7 @@
 package com.example.secretsanta.ui.navigation
 
-class Screen {
+sealed class Screen(val route: String) {
+    object Login : Screen("login")
+    object Register : Screen("register")
+    object SecretSantaList : Screen("secret_santa_list")
 }
