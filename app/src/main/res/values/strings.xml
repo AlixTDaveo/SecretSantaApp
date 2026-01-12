@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SecretSanta</string>
+    <string name="app_name">Secret Santa</string>
+
+    <!-- Auth -->
+    <string name="login_title">Connexion</string>
+    <string name="register_title">Inscription</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="display_name">Nom d\'affichage</string>
+    <string name="login">Se connecter</string>
+    <string name="register">S\'inscrire</string>
+    <string name="already_have_account">Déjà un compte ?</string>
+    <string name="no_account">Pas de compte ?</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">Mes Secret Santas</string>
+    <string name="create_secret_santa">Créer un Secret Santa</string>
+    <string name="no_secret_santas">Aucun Secret Santa</string>
+
+    <!-- Validation mot de passe -->
+    <string name="confirm_password">Confirmer le mot de passe</string>
+    <string name="password_too_short">Le mot de passe doit contenir au moins 8 caractères</string>
+    <string name="password_no_uppercase">Le mot de passe doit contenir au moins une majuscule</string>
+    <string name="password_no_lowercase">Le mot de passe doit contenir au moins une minuscule</string>
+    <string name="password_no_digit">Le mot de passe doit contenir au moins un chiffre</string>
+    <string name="password_no_special">Le mot de passe doit contenir au moins un caractère spécial</string>
+    <string name="passwords_dont_match">Les mots de passe ne correspondent pas</string>
 </resources>
