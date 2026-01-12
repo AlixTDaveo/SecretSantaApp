@@ -1,4 +1,7 @@
 package com.example.secretsanta
 
-class SecretSanataApplication {
-}
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class SecretSantaApplication : Application()

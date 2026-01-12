@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import android.util.Log
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
@@ -64,8 +65,12 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(email: String, password: String): Resource<User> {
         return try {
+            Log.d("AuthRepository", "Login attempt for: $email")
+
             val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
             val firebaseUser = result.user ?: return Resource.Error("Login failed")
+
+            Log.d("AuthRepository", "Firebase login successful: ${firebaseUser.uid}")
 
             val user = User(
                 id = firebaseUser.uid,
@@ -84,8 +89,11 @@ class AuthRepositoryImpl @Inject constructor(
 
             preferencesManager.saveUserId(firebaseUser.uid)
 
+            Log.d("AuthRepository", "User saved locally")
+
             Resource.Success(user)
         } catch (e: Exception) {
+            Log.e("AuthRepository", "Login error", e)
             Resource.Error(e.message ?: "Login failed")
         }
     }

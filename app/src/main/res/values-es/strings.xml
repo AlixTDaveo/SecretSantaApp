@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Amigo Secreto</string>
+
+    <!-- Auth -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="register_title">Registrarse</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="display_name">Nombre para mostrar</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="already_have_account">¿Ya tienes una cuenta?</string>
+    <string name="no_account">¿No tienes cuenta?</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">Mis Amigos Secretos</string>
+    <string name="create_secret_santa">Crear Amigo Secreto</string>
+    <string name="no_secret_santas">No hay Amigos Secretos</string>
+
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="password_too_short">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="password_no_uppercase">La contraseña debe contener al menos una mayúscula</string>
+    <string name="password_no_lowercase">La contraseña debe contener al menos una minúscula</string>
+    <string name="password_no_digit">La contraseña debe contener al menos un dígito</string>
+    <string name="password_no_special">La contraseña debe contener al menos un carácter especial</string>
+    <string name="passwords_dont_match">Las contraseñas no coinciden</string>
 </resources>

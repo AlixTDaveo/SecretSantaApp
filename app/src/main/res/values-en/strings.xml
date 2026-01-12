@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Secret Santa</string>
+
+    <!-- Auth -->
+    <string name="login_title">Login</string>
+    <string name="register_title">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="display_name">Display Name</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="no_account">No account?</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">My Secret Santas</string>
+    <string name="create_secret_santa">Create Secret Santa</string>
+    <string name="no_secret_santas">No Secret Santas</string>
+
+    <string name="confirm_password">Confirm password</string>
+    <string name="password_too_short">Password must be at least 8 characters</string>
+    <string name="password_no_uppercase">Password must contain at least one uppercase letter</string>
+    <string name="password_no_lowercase">Password must contain at least one lowercase letter</string>
+    <string name="password_no_digit">Password must contain at least one digit</string>
+    <string name="password_no_special">Password must contain at least one special character</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
 </resources>

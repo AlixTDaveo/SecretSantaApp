@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.secretsanta.core.database.SecretSantaDatabase
 import com.example.secretsanta.core.datastore.PreferencesManager
+import com.example.secretsanta.core.util.SoundManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -39,5 +40,11 @@ object AppModule {
     @Singleton
     fun providePreferencesManager(@ApplicationContext context: Context): PreferencesManager {
         return PreferencesManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSoundManager(@ApplicationContext context: Context): SoundManager {
+        return SoundManager(context)
     }
 }
