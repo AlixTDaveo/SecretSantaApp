@@ -46,6 +46,9 @@ class AuthRepositoryImpl @Inject constructor(
                 )
             ).await()
 
+            // NOUVEAU : Vérifier les invitations en attente
+            checkPendingInvitations(firebaseUser.uid, email)
+
             // Save locally
             userDao.insertUser(
                 UserEntity(
@@ -60,6 +63,53 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Success(user)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Registration failed")
+        }
+    }
+
+    private suspend fun checkPendingInvitations(userId: String, email: String) {
+        try {
+            // Récupère toutes les invitations pour cet email
+            val invitations = firestore.collection("invitations")
+                .whereEqualTo("email", email.lowercase())
+                .whereEqualTo("status", "pending")
+                .get()
+                .await()
+
+            invitations.documents.forEach { doc ->
+                val secretSantaId = doc.getString("secretSantaId") ?: return@forEach
+
+                // Marque l'invitation comme acceptée
+                doc.reference.update("status", "accepted", "acceptedBy", userId).await()
+
+                // Ajoute l'utilisateur aux participants du Secret Santa
+                val secretSantaDoc = firestore.collection("secret_santas")
+                    .document(secretSantaId)
+                    .get()
+                    .await()
+
+                if (secretSantaDoc.exists()) {
+                    @Suppress("UNCHECKED_CAST")
+                    val participants = secretSantaDoc.get("participants") as? MutableList<Map<String, Any>> ?: mutableListOf()
+
+                    // Met à jour le participant avec son userId
+                    val updatedParticipants = participants.map { p ->
+                        if ((p["email"] as? String)?.equals(email, ignoreCase = true) == true) {
+                            p.toMutableMap().apply {
+                                put("userId", userId)
+                            }
+                        } else {
+                            p
+                        }
+                    }
+
+                    firestore.collection("secret_santas")
+                        .document(secretSantaId)
+                        .update("participants", updatedParticipants)
+                        .await()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Error checking invitations", e)
         }
     }
 

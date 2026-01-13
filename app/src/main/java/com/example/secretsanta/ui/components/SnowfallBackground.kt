@@ -2,14 +2,15 @@ package com.example.secretsanta.ui.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.rotate
+import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -19,29 +20,26 @@ data class Snowflake(
     var y: Float,
     val speed: Float,
     val size: Float,
-    val swayAmplitude: Float,
-    val swayFrequency: Float
+    val drift: Float, // Léger mouvement horizontal
+    var time: Float = 0f
 )
 
 @Composable
 fun SnowfallBackground(
     modifier: Modifier = Modifier,
-    snowflakeCount: Int = 50,
-    snowColor: Color = Color.White.copy(alpha = 0.8f)
+    snowflakeCount: Int = 100,
+    snowColor: Color = Color.White
 ) {
-    val density = LocalDensity.current
-
     var snowflakes by remember {
         mutableStateOf(
             List(snowflakeCount) { index ->
                 Snowflake(
                     id = index,
                     x = Random.nextFloat(),
-                    y = Random.nextFloat() * -0.5f, // Démarrent au-dessus de l'écran
-                    speed = Random.nextFloat() * 0.5f + 0.3f, // 0.3 à 0.8
-                    size = Random.nextFloat() * 6f + 3f, // 3 à 9 dp
-                    swayAmplitude = Random.nextFloat() * 20f + 10f, // 10 à 30
-                    swayFrequency = Random.nextFloat() * 2f + 1f // 1 à 3
+                    y = Random.nextFloat() * -1f, // Commence au-dessus
+                    speed = Random.nextFloat() * 0.3f + 0.15f, // Lent
+                    size = Random.nextFloat() * 2f + 1.5f, // Petits : 1.5-3.5 dp
+                    drift = Random.nextFloat() * 0.3f - 0.15f // Léger drift
                 )
             }
         )
@@ -50,50 +48,79 @@ fun SnowfallBackground(
     val infiniteTransition = rememberInfiniteTransition(label = "snowfall")
     val animationTime by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = 10000f,
+        targetValue = Float.MAX_VALUE,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 10000, easing = LinearEasing),
+            animation = tween(durationMillis = 50, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
-        label = "snowfall_time"
+        label = "time"
     )
 
     LaunchedEffect(animationTime) {
-        snowflakes = snowflakes.map { snowflake ->
-            val newY = snowflake.y + (snowflake.speed * 0.005f)
-            val sway = sin(animationTime * snowflake.swayFrequency * 0.001f) * 0.02f
+        snowflakes = snowflakes.map { flake ->
+            val newY = flake.y + (flake.speed * 0.002f)
+            val newTime = flake.time + 0.05f
+            val horizontalOffset = sin(newTime) * flake.drift * 0.005f
 
-            if (newY > 1.1f) {
-                // Réinitialise au sommet
-                snowflake.copy(
+            if (newY > 1.2f) {
+                // Réinitialise en haut
+                Snowflake(
+                    id = flake.id,
+                    x = Random.nextFloat(),
                     y = -0.1f,
-                    x = Random.nextFloat()
+                    speed = Random.nextFloat() * 0.3f + 0.15f,
+                    size = Random.nextFloat() * 2f + 1.5f,
+                    drift = Random.nextFloat() * 0.3f - 0.15f,
+                    time = 0f
                 )
             } else {
-                snowflake.copy(
+                flake.copy(
                     y = newY,
-                    x = (snowflake.x + sway).coerceIn(0f, 1f)
+                    x = (flake.x + horizontalOffset).coerceIn(0f, 1f),
+                    time = newTime
                 )
             }
         }
     }
 
     Canvas(modifier = modifier.fillMaxSize()) {
-        val width = size.width
-        val height = size.height
+        snowflakes.forEach { flake ->
+            val x = flake.x * size.width
+            val y = flake.y * size.height
+            val sizePx = flake.size * density
 
-        snowflakes.forEach { snowflake ->
-            val sizePx = with(density) { snowflake.size.dp.toPx() }
-
-            drawCircle(
-                color = snowColor,
-                radius = sizePx,
-                center = Offset(
-                    x = snowflake.x * width,
-                    y = snowflake.y * height
-                ),
-                alpha = 0.8f
+            // Flocon simple : petite étoile à 6 branches
+            drawSimpleSnowflake(
+                center = Offset(x, y),
+                size = sizePx,
+                color = snowColor
             )
+        }
+    }
+}
+
+private fun DrawScope.drawSimpleSnowflake(
+    center: Offset,
+    size: Float,
+    color: Color
+) {
+    // Petit cercle central
+    drawCircle(
+        color = color,
+        radius = size * 0.8f,
+        center = center,
+        alpha = 0.9f
+    )
+
+    // 6 petites branches
+    for (i in 0 until 6) {
+        val angle = (i * 60f)
+        rotate(angle, center) {
+            val path = Path().apply {
+                moveTo(center.x, center.y)
+                lineTo(center.x, center.y - size * 1.5f)
+            }
+            drawPath(path, color, alpha = 0.7f)
         }
     }
 }

@@ -80,10 +80,6 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        soundManager.release()
-    }
 }
 
 data class LoginState(

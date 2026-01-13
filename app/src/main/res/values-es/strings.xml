@@ -25,4 +25,36 @@
     <string name="password_no_digit">La contraseña debe contener al menos un dígito</string>
     <string name="password_no_special">La contraseña debe contener al menos un carácter especial</string>
     <string name="passwords_dont_match">Las contraseñas no coinciden</string>
+
+    <!-- Crear Secret Santa -->
+    <string name="create_secret_santa_title">Nuevo Amigo Secreto</string>
+    <string name="group_name">Nombre del grupo</string>
+    <string name="group_name_hint">Ej: Familia Navidad 2025</string>
+    <string name="deadline">Fecha límite</string>
+    <string name="select_date">Seleccionar fecha</string>
+    <string name="participants">Participantes</string>
+    <string name="add_participant">Añadir participante</string>
+    <string name="participant_name">Nombre del participante</string>
+    <string name="participant_email">Email del participante</string>
+    <string name="remove_participant">Eliminar</string>
+    <string name="create_group">Crear grupo</string>
+    <string name="error_empty_name">El nombre del grupo es obligatorio</string>
+    <string name="error_no_participants">Añade al menos 2 participantes</string>
+    <string name="error_invalid_email">Email inválido</string>
+
+    <!-- Detalles Secret Santa -->
+    <string name="details_title">Detalles del Amigo Secreto</string>
+    <string name="edit_secret_santa">Editar</string>
+    <string name="delete_secret_santa">Eliminar</string>
+    <string name="participants_list">Lista de participantes</string>
+    <string name="draw_not_done">Sorteo no realizado</string>
+    <string name="draw_done">Sorteo realizado</string>
+    <string name="perform_draw">Realizar sorteo</string>
+    <string name="your_giftee">Regalas a:</string>
+    <string name="secret_messaging">Mensajería secreta</string>
+    <string name="wishlist">Lista de deseos</string>
+    <string name="confirm_delete_title">¿Eliminar este Amigo Secreto?</string>
+    <string name="confirm_delete_message">Esta acción es irreversible</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
 </resources>

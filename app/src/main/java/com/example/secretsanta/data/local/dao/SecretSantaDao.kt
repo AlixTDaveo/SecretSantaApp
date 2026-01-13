@@ -9,8 +9,17 @@ interface SecretSantaDao {
     @Query("SELECT * FROM secret_santas WHERE creatorId = :userId")
     fun getSecretSantasByUser(userId: String): Flow<List<SecretSantaEntity>>
 
+    @Query("SELECT * FROM secret_santas WHERE id = :santaId")
+    fun getSecretSantaById(santaId: String): Flow<SecretSantaEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSecretSanta(secretSanta: SecretSantaEntity)
+
+    @Update
+    suspend fun updateSecretSanta(secretSanta: SecretSantaEntity)
+
+    @Query("DELETE FROM secret_santas WHERE id = :santaId")
+    suspend fun deleteSecretSanta(santaId: String)
 
     @Query("DELETE FROM secret_santas")
     suspend fun clearAll()

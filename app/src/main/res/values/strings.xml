@@ -26,4 +26,36 @@
     <string name="password_no_digit">Le mot de passe doit contenir au moins un chiffre</string>
     <string name="password_no_special">Le mot de passe doit contenir au moins un caractère spécial</string>
     <string name="passwords_dont_match">Les mots de passe ne correspondent pas</string>
+
+    <!-- Création Secret Santa -->
+    <string name="create_secret_santa_title">Nouveau Secret Santa</string>
+    <string name="group_name">Nom du groupe</string>
+    <string name="group_name_hint">Ex: Famille Noël 2025</string>
+    <string name="deadline">Date limite</string>
+    <string name="select_date">Sélectionner une date</string>
+    <string name="participants">Participants</string>
+    <string name="add_participant">Ajouter un participant</string>
+    <string name="participant_name">Nom du participant</string>
+    <string name="participant_email">Email du participant</string>
+    <string name="remove_participant">Retirer</string>
+    <string name="create_group">Créer le groupe</string>
+    <string name="error_empty_name">Le nom du groupe est obligatoire</string>
+    <string name="error_no_participants">Ajoutez au moins 2 participants</string>
+    <string name="error_invalid_email">Email invalide</string>
+
+    <!-- Détails Secret Santa -->
+    <string name="details_title">Détails du Secret Santa</string>
+    <string name="edit_secret_santa">Modifier</string>
+    <string name="delete_secret_santa">Supprimer</string>
+    <string name="participants_list">Liste des participants</string>
+    <string name="draw_not_done">Tirage non effectué</string>
+    <string name="draw_done">Tirage effectué</string>
+    <string name="perform_draw">Procéder au tirage</string>
+    <string name="your_giftee">Vous offrez à :</string>
+    <string name="secret_messaging">Messagerie secrète</string>
+    <string name="wishlist">Liste de souhaits</string>
+    <string name="confirm_delete_title">Supprimer ce Secret Santa ?</string>
+    <string name="confirm_delete_message">Cette action est irréversible</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
 </resources>
