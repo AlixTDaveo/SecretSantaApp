@@ -4,6 +4,8 @@ data class SecretSanta(
     val id: String,
     val name: String,
     val deadline: Long,
-    val participants: List<String>,
-    val creatorId: String
+    val participants: List<Participant>,
+    val creatorId: String,
+    val drawDone: Boolean = false,
+    val assignments: Map<String, String> = emptyMap() // participantId -> gifteeId
 )

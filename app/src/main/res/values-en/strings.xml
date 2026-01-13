@@ -25,4 +25,36 @@
     <string name="password_no_digit">Password must contain at least one digit</string>
     <string name="password_no_special">Password must contain at least one special character</string>
     <string name="passwords_dont_match">Passwords do not match</string>
+
+    <!-- Create Secret Santa -->
+    <string name="create_secret_santa_title">New Secret Santa</string>
+    <string name="group_name">Group Name</string>
+    <string name="group_name_hint">Ex: Family Christmas 2025</string>
+    <string name="deadline">Deadline</string>
+    <string name="select_date">Select date</string>
+    <string name="participants">Participants</string>
+    <string name="add_participant">Add participant</string>
+    <string name="participant_name">Participant name</string>
+    <string name="participant_email">Participant email</string>
+    <string name="remove_participant">Remove</string>
+    <string name="create_group">Create group</string>
+    <string name="error_empty_name">Group name is required</string>
+    <string name="error_no_participants">Add at least 2 participants</string>
+    <string name="error_invalid_email">Invalid email</string>
+
+    <!-- Secret Santa Details -->
+    <string name="details_title">Secret Santa Details</string>
+    <string name="edit_secret_santa">Edit</string>
+    <string name="delete_secret_santa">Delete</string>
+    <string name="participants_list">Participants list</string>
+    <string name="draw_not_done">Draw not done</string>
+    <string name="draw_done">Draw done</string>
+    <string name="perform_draw">Perform draw</string>
+    <string name="your_giftee">You give to:</string>
+    <string name="secret_messaging">Secret messaging</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="confirm_delete_title">Delete this Secret Santa?</string>
+    <string name="confirm_delete_message">This action is irreversible</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

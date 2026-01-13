@@ -7,6 +7,7 @@ import com.example.secretsanta.core.datastore.PreferencesManager
 import com.example.secretsanta.core.util.SoundManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,4 +48,8 @@ object AppModule {
     fun provideSoundManager(@ApplicationContext context: Context): SoundManager {
         return SoundManager(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 }

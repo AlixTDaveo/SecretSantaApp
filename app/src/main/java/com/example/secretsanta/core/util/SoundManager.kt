@@ -16,38 +16,43 @@ class SoundManager @Inject constructor(
 
     fun playSuccessSound() {
         try {
-            // Libère le MediaPlayer précédent si existant
+            // NE PAS release() immédiatement
+            if (mediaPlayer?.isPlaying == true) {
+                mediaPlayer?.stop()
+            }
+
             mediaPlayer?.release()
+            mediaPlayer = null
 
-            // Crée un nouveau MediaPlayer
-            // IMPORTANT : Remplacez R.raw.jingle_bell par le nom de votre fichier
-            mediaPlayer = MediaPlayer.create(context, R.raw.jingle_bells)
-
-            mediaPlayer?.apply {
-                setOnCompletionListener {
-                    it.release()
-                    mediaPlayer = null
+            // Crée et lance
+            mediaPlayer = MediaPlayer.create(context, R.raw.jingle_bells)?.apply {
+                setOnCompletionListener { player ->
+                    Log.d("SoundManager", "Sound completed")
+                    player.release()
+                }
+                setOnErrorListener { player, what, extra ->
+                    Log.e("SoundManager", "MediaPlayer error: what=$what, extra=$extra")
+                    player.release()
+                    true
                 }
                 start()
+                Log.d("SoundManager", "Sound playing, duration: ${duration}ms")
             }
         } catch (e: Exception) {
             Log.e("SoundManager", "Error playing sound", e)
         }
     }
 
-    fun playErrorSound() {
-        // Optionnel : Son d'erreur différent
+    // NE PAS appeler release() dans onCleared du ViewModel
+    fun stopSound() {
         try {
-            mediaPlayer?.release()
-            // mediaPlayer = MediaPlayer.create(context, R.raw.error_sound)
-            // mediaPlayer?.start()
+            mediaPlayer?.apply {
+                if (isPlaying) stop()
+                release()
+            }
+            mediaPlayer = null
         } catch (e: Exception) {
-            Log.e("SoundManager", "Error playing error sound", e)
+            Log.e("SoundManager", "Error stopping sound", e)
         }
-    }
-
-    fun release() {
-        mediaPlayer?.release()
-        mediaPlayer = null
     }
 }

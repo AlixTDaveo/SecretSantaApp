@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secretsanta.domain.model.SecretSanta
 import com.example.secretsanta.domain.repository.SecretSantaRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,15 +14,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SecretSantaListViewModel @Inject constructor(
-    private val secretSantaRepository: SecretSantaRepository
+    private val secretSantaRepository: SecretSantaRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SecretSantaListState())
     val state = _state.asStateFlow()
 
     init {
-        // TODO: Get current user ID from preferences
-        loadSecretSantas("current_user_id")
+        val currentUserId = firebaseAuth.currentUser?.uid ?: ""
+        if (currentUserId.isNotEmpty()) {
+            loadSecretSantas(currentUserId)
+        }
     }
 
     private fun loadSecretSantas(userId: String) {
