@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import android.util.Log
+import com.google.firebase.auth.EmailAuthProvider
 
 class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
@@ -164,6 +165,53 @@ class AuthRepositoryImpl @Inject constructor(
                     displayName = it.displayName
                 )
             }
+        }
+    }
+    override suspend fun updateDisplayName(displayName: String): Resource<Unit> {
+        return try {
+            val firebaseUser = firebaseAuth.currentUser ?: return Resource.Error("Not authenticated")
+
+            // Update FirebaseAuth profile
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(displayName)
+                .build()
+            firebaseUser.updateProfile(profileUpdates).await()
+
+            // Update Firestore (merge)
+            firestore.collection("users").document(firebaseUser.uid)
+                .set(mapOf("displayName" to displayName), com.google.firebase.firestore.SetOptions.merge())
+                .await()
+
+            // Update Room (source de vérité UI)
+            val email = firebaseUser.email ?: ""
+            userDao.insertUser(
+                UserEntity(
+                    id = firebaseUser.uid,
+                    email = email,
+                    displayName = displayName
+                )
+            )
+
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Update display name failed")
+        }
+    }
+    override suspend fun changePassword(oldPassword: String, newPassword: String): Resource<Unit> {
+        return try {
+            val firebaseUser = firebaseAuth.currentUser ?: return Resource.Error("Not authenticated")
+            val email = firebaseUser.email ?: return Resource.Error("Email not available")
+
+            // Re-auth
+            val credential = EmailAuthProvider.getCredential(email, oldPassword)
+            firebaseUser.reauthenticate(credential).await()
+
+            // Update password
+            firebaseUser.updatePassword(newPassword).await()
+
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Password update failed")
         }
     }
 }
