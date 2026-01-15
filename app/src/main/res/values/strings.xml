@@ -58,4 +58,22 @@
     <string name="confirm_delete_message">Cette action est irréversible</string>
     <string name="cancel">Annuler</string>
     <string name="delete">Supprimer</string>
+
+    <string name="profile_title">Profil</string>
+    <string name="profile_no_user">Aucun utilisateur connecté.</string>
+    <string name="profile_display_name_label">Nom affiché</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_edit_button">Modifier le profil</string>
+    <string name="profile_logout_button">Déconnexion</string>
+
+    <string name="edit_profile_title">Modifier le profil</string>
+    <string name="edit_profile_display_name">Nom affiché</string>
+    <string name="edit_profile_password_section">Mot de passe</string>
+    <string name="edit_profile_old_password">Ancien mot de passe</string>
+    <string name="edit_profile_new_password">Nouveau mot de passe</string>
+    <string name="edit_profile_confirm_new_password">Confirmer le nouveau mot de passe</string>
+
+    <string name="save">Enregistrer</string>
+    <string name="loading">Chargement…</string>
+
 </resources>

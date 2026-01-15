@@ -11,6 +11,7 @@ sealed class Screen(val route: String) {
     object Messaging : Screen("messaging")
     object Calendar : Screen("calendar")
     object Profile : Screen("profile")
+    object EditProfile : Screen("edit_profile")
 
     // Secondary Screens (sans Bottom Nav)
     object CreateSecretSanta : Screen("create_secret_santa")
