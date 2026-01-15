@@ -8,9 +8,12 @@ data class SecretSantaEntity(
     @PrimaryKey val id: String,
     val name: String,
     val deadline: Long,
-    val participants: String, // JSON string List<Participant>
+    val participants: String, // JSON
     val creatorId: String,
     val drawDone: Boolean = false,
-    val assignments: String = "{}", // JSON string Map<String, String>
-    val lastSync: Long = System.currentTimeMillis()
+    val assignments: String = "{}",
+    val lastSync: Long = System.currentTimeMillis(),
+    val imageUrl: String? = null,
+    val budget: String? = null, // NOUVEAU
+    val description: String? = null // NOUVEAU
 )

@@ -1,25 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Secret Santa</string>
 
     <!-- Auth -->
-    <string name="login_title">Connexion</string>
-    <string name="register_title">Inscription</string>
-    <string name="email">Email</string>
-    <string name="password">Mot de passe</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Mot de passe</string>
+    <string name="login_button">Connexion</string>
+    <string name="register_button">S\'inscrire</string>
+    <string name="logout">Déconnexion</string>
+    <string name="no_account">Pas de compte ? S\'inscrire</string>
+    <string name="already_have_account">Déjà un compte ? Se connecter</string>
     <string name="display_name">Nom d\'affichage</string>
-    <string name="login">Se connecter</string>
-    <string name="register">S\'inscrire</string>
-    <string name="already_have_account">Déjà un compte ?</string>
-    <string name="no_account">Pas de compte ?</string>
-
-    <!-- Secret Santa List -->
-    <string name="my_secret_santas">Mes Secret Santas</string>
-    <string name="create_secret_santa">Créer un Secret Santa</string>
-    <string name="no_secret_santas">Aucun Secret Santa</string>
-
-    <!-- Validation mot de passe -->
     <string name="confirm_password">Confirmer le mot de passe</string>
+
+    <!-- Password validation -->
     <string name="password_too_short">Le mot de passe doit contenir au moins 8 caractères</string>
     <string name="password_no_uppercase">Le mot de passe doit contenir au moins une majuscule</string>
     <string name="password_no_lowercase">Le mot de passe doit contenir au moins une minuscule</string>
@@ -27,33 +20,73 @@
     <string name="password_no_special">Le mot de passe doit contenir au moins un caractère spécial</string>
     <string name="passwords_dont_match">Les mots de passe ne correspondent pas</string>
 
-    <!-- Création Secret Santa -->
-    <string name="create_secret_santa_title">Nouveau Secret Santa</string>
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_secret_santas">Mes Secret Santas</string>
+    <string name="nav_calendar">Calendrier</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">Mes Secret Santas</string>
+    <string name="no_secret_santas">Aucun Secret Santa pour le moment</string>
+    <string name="create_secret_santa">Créer un Secret Santa</string>
+    <string name="participants_count">%1$d participants</string>
+    <string name="deadline_label">Date limite : %1$s</string>
+
+    <!-- Create Secret Santa -->
+    <string name="create_secret_santa_title">Créer un Secret Santa</string>
+    <string name="general_info">Informations générales</string>
     <string name="group_name">Nom du groupe</string>
     <string name="group_name_hint">Ex: Famille Noël 2025</string>
+    <string name="group_name_required">Nom du groupe *</string>
     <string name="deadline">Date limite</string>
+    <string name="deadline_required">Date limite *</string>
     <string name="select_date">Sélectionner une date</string>
+    <string name="budget">Budget maximum</string>
+    <string name="budget_hint">Ex: 30€</string>
+    <string name="description">Description / Informations</string>
+    <string name="description_hint">Ex: RDV à la cafet le 24 décembre à midi</string>
     <string name="participants">Participants</string>
     <string name="add_participant">Ajouter un participant</string>
-    <string name="participant_name">Nom du participant</string>
-    <string name="participant_email">Email du participant</string>
+    <string name="participant_name">Nom</string>
+    <string name="participant_name_required">Nom *</string>
+    <string name="participant_name_hint">Ex: Marie Dupont</string>
+    <string name="participant_email">Email</string>
+    <string name="participant_email_required">Email *</string>
+    <string name="participant_email_hint">Ex: marie@exemple.com</string>
+    <string name="add_button">Ajouter</string>
     <string name="remove_participant">Retirer</string>
-    <string name="create_group">Créer le groupe</string>
-    <string name="error_empty_name">Le nom du groupe est obligatoire</string>
-    <string name="error_no_participants">Ajoutez au moins 2 participants</string>
-    <string name="error_invalid_email">Email invalide</string>
+    <string name="create_group">Créer le Secret Santa</string>
+    <string name="participants_list_count">Participants (%1$d)</string>
 
-    <!-- Détails Secret Santa -->
+    <!-- Validation errors -->
+    <string name="error_empty_name">Le nom du groupe est requis</string>
+    <string name="error_no_participants">Au moins 2 participants requis</string>
+    <string name="error_invalid_email">Email invalide</string>
+    <string name="error_duplicate_email">Cet email est déjà utilisé</string>
+    <string name="error_select_deadline">Sélectionnez une date limite</string>
+    <string name="error_name_required">Le nom est requis</string>
+    <string name="error_email_required">L\'email est requis</string>
+
+    <!-- Secret Santa Details -->
     <string name="details_title">Détails du Secret Santa</string>
     <string name="edit_secret_santa">Modifier</string>
     <string name="delete_secret_santa">Supprimer</string>
-    <string name="participants_list">Liste des participants</string>
+    <string name="organizer">Organisateur</string>
+    <string name="you_label">Vous</string>
+
+    <!-- Draw -->
     <string name="draw_not_done">Tirage non effectué</string>
     <string name="draw_done">Tirage effectué</string>
-    <string name="perform_draw">Procéder au tirage</string>
+    <string name="perform_draw">Tirer au sort</string>
     <string name="your_giftee">Vous offrez à :</string>
+    <string name="view_wishlist">Voir sa liste de souhaits</string>
+
+    <!-- Actions -->
     <string name="secret_messaging">Messagerie secrète</string>
     <string name="wishlist">Liste de souhaits</string>
+
+    <!-- Dialogs -->
     <string name="confirm_delete_title">Supprimer ce Secret Santa ?</string>
     <string name="confirm_delete_message">Cette action est irréversible</string>
     <string name="cancel">Annuler</string>

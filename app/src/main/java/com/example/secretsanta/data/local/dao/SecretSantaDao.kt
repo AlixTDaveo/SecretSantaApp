@@ -23,4 +23,6 @@ interface SecretSantaDao {
 
     @Query("DELETE FROM secret_santas")
     suspend fun clearAll()
+    @Query("SELECT * FROM secret_santas")
+    fun getAllSecretSantas(): Flow<List<SecretSantaEntity>>
 }

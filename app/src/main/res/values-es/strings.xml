@@ -1,58 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Amigo Secreto</string>
+    <string name="app_name">Secret Santa</string>
 
     <!-- Auth -->
-    <string name="login_title">Iniciar sesión</string>
-    <string name="register_title">Registrarse</string>
-    <string name="email">Correo electrónico</string>
-    <string name="password">Contraseña</string>
-    <string name="display_name">Nombre para mostrar</string>
-    <string name="login">Iniciar sesión</string>
-    <string name="register">Registrarse</string>
-    <string name="already_have_account">¿Ya tienes una cuenta?</string>
-    <string name="no_account">¿No tienes cuenta?</string>
-
-    <!-- Secret Santa List -->
-    <string name="my_secret_santas">Mis Amigos Secretos</string>
-    <string name="create_secret_santa">Crear Amigo Secreto</string>
-    <string name="no_secret_santas">No hay Amigos Secretos</string>
-
+    <string name="email_label">Email</string>
+    <string name="password_label">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="register_button">Registrarse</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="already_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="display_name">Nombre de usuario</string>
     <string name="confirm_password">Confirmar contraseña</string>
+
+    <!-- Password validation -->
     <string name="password_too_short">La contraseña debe tener al menos 8 caracteres</string>
     <string name="password_no_uppercase">La contraseña debe contener al menos una mayúscula</string>
     <string name="password_no_lowercase">La contraseña debe contener al menos una minúscula</string>
-    <string name="password_no_digit">La contraseña debe contener al menos un dígito</string>
+    <string name="password_no_digit">La contraseña debe contener al menos un número</string>
     <string name="password_no_special">La contraseña debe contener al menos un carácter especial</string>
     <string name="passwords_dont_match">Las contraseñas no coinciden</string>
 
-    <!-- Crear Secret Santa -->
-    <string name="create_secret_santa_title">Nuevo Amigo Secreto</string>
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_secret_santas">Mis Amigos Secretos</string>
+    <string name="nav_calendar">Calendario</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">Mis Amigos Secretos</string>
+    <string name="no_secret_santas">Ningún Amigo Secreto todavía</string>
+    <string name="create_secret_santa">Crear Amigo Secreto</string>
+    <string name="participants_count">%1$d participantes</string>
+    <string name="deadline_label">Fecha límite: %1$s</string>
+
+    <!-- Create Secret Santa -->
+    <string name="create_secret_santa_title">Crear Amigo Secreto</string>
+    <string name="general_info">Información General</string>
     <string name="group_name">Nombre del grupo</string>
     <string name="group_name_hint">Ej: Familia Navidad 2025</string>
+    <string name="group_name_required">Nombre del grupo *</string>
     <string name="deadline">Fecha límite</string>
+    <string name="deadline_required">Fecha límite *</string>
     <string name="select_date">Seleccionar fecha</string>
+    <string name="budget">Presupuesto máximo</string>
+    <string name="budget_hint">Ej: 30€</string>
+    <string name="description">Descripción / Información</string>
+    <string name="description_hint">Ej: Nos vemos en la cafetería el 24 de diciembre al mediodía</string>
     <string name="participants">Participantes</string>
     <string name="add_participant">Añadir participante</string>
-    <string name="participant_name">Nombre del participante</string>
-    <string name="participant_email">Email del participante</string>
+    <string name="participant_name">Nombre</string>
+    <string name="participant_name_required">Nombre *</string>
+    <string name="participant_name_hint">Ej: María García</string>
+    <string name="participant_email">Email</string>
+    <string name="participant_email_required">Email *</string>
+    <string name="participant_email_hint">Ej: maria@ejemplo.com</string>
+    <string name="add_button">Añadir</string>
     <string name="remove_participant">Eliminar</string>
-    <string name="create_group">Crear grupo</string>
-    <string name="error_empty_name">El nombre del grupo es obligatorio</string>
-    <string name="error_no_participants">Añade al menos 2 participantes</string>
-    <string name="error_invalid_email">Email inválido</string>
+    <string name="create_group">Crear Amigo Secreto</string>
+    <string name="participants_list_count">Participantes (%1$d)</string>
 
-    <!-- Detalles Secret Santa -->
+    <!-- Validation errors -->
+    <string name="error_empty_name">El nombre del grupo es obligatorio</string>
+    <string name="error_no_participants">Se requieren al menos 2 participantes</string>
+    <string name="error_invalid_email">Email inválido</string>
+    <string name="error_duplicate_email">Este email ya está en uso</string>
+    <string name="error_select_deadline">Selecciona una fecha límite</string>
+    <string name="error_name_required">El nombre es obligatorio</string>
+    <string name="error_email_required">El email es obligatorio</string>
+
+    <!-- Secret Santa Details -->
     <string name="details_title">Detalles del Amigo Secreto</string>
     <string name="edit_secret_santa">Editar</string>
     <string name="delete_secret_santa">Eliminar</string>
-    <string name="participants_list">Lista de participantes</string>
+    <string name="organizer">Organizador</string>
+    <string name="you_label">Tú</string>
+
+    <!-- Draw -->
     <string name="draw_not_done">Sorteo no realizado</string>
     <string name="draw_done">Sorteo realizado</string>
     <string name="perform_draw">Realizar sorteo</string>
-    <string name="your_giftee">Regalas a:</string>
+    <string name="your_giftee">Le das a:</string>
+    <string name="view_wishlist">Ver su lista de deseos</string>
+
+    <!-- Actions -->
     <string name="secret_messaging">Mensajería secreta</string>
     <string name="wishlist">Lista de deseos</string>
+
+    <!-- Dialogs -->
     <string name="confirm_delete_title">¿Eliminar este Amigo Secreto?</string>
     <string name="confirm_delete_message">Esta acción es irreversible</string>
     <string name="cancel">Cancelar</string>

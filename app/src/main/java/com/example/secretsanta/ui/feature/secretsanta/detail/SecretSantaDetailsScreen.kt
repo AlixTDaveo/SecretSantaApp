@@ -13,9 +13,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +39,7 @@ fun SecretSantaDetailsScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(state.isDeleted) {
@@ -71,7 +75,7 @@ fun SecretSantaDetailsScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Fond avec dégradé et flocons
+        // Fond avec flocons
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,40 +83,53 @@ fun SecretSantaDetailsScreen(
                     Brush.verticalGradient(
                         colors = listOf(
                             ChristmasColors.AppBackground,
-                            ChristmasColors.AppBackground.copy(alpha = 0.9f)
+                            ChristmasColors.AppBackground.copy(alpha = 0.85f)
                         )
                     )
                 )
         ) {
-            SnowfallBackground(snowflakeCount = 80)
+            SnowfallBackground(
+                snowflakeCount = 100,
+                snowColor = Color.White.copy(alpha = 0.8f)
+            )
         }
 
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Détails") },
+                    title = {
+                        Text(
+                            "Détails du Secret Santa",
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = "Retour",
+                                tint = ChristmasColors.White
+                            )
                         }
                     },
                     actions = {
-                        IconButton(onClick = { showDeleteDialog = true }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Supprimer",
-                                tint = ChristmasColors.AppButtonRed
-                            )
+                        if (state.isOrganizer) {
+                            IconButton(onClick = { showDeleteDialog = true }) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Supprimer",
+                                    tint = ChristmasColors.AppButtonRed
+                                )
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = ChristmasColors.AppBackground,
-                        titleContentColor = ChristmasColors.White,
-                        navigationIconContentColor = ChristmasColors.White
+                        titleContentColor = ChristmasColors.White
                     )
                 )
             },
-            containerColor = androidx.compose.ui.graphics.Color.Transparent
+            containerColor = Color.Transparent
         ) { padding ->
             if (state.isLoading) {
                 Box(
@@ -123,6 +140,9 @@ fun SecretSantaDetailsScreen(
                 }
             } else if (state.secretSanta != null) {
                 val secretSanta = state.secretSanta!!
+                val userParticipant = secretSanta.participants.find {
+                    it.userId == currentUserId || it.email.equals(currentUserEmail, ignoreCase = true)
+                }
 
                 LazyColumn(
                     modifier = Modifier
@@ -131,140 +151,102 @@ fun SecretSantaDetailsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // En-tête avec image et infos
+                    // ========== CARTE PRINCIPALE ==========
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
                                 containerColor = ChristmasColors.White
                             ),
-                            shape = RoundedCornerShape(20.dp),
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            shape = RoundedCornerShape(24.dp),
+                            elevation = CardDefaults.cardElevation(12.dp)
                         ) {
-                            Column(
-                                modifier = Modifier.padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                // Icône centrée
-                                Surface(
-                                    modifier = Modifier.size(100.dp),
-                                    shape = CircleShape,
-                                    color = ChristmasColors.AppBackground.copy(alpha = 0.15f)
-                                ) {
-                                    Box(contentAlignment = Alignment.Center) {
-                                        Text(text = "🎁", fontSize = 56.sp)
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(20.dp))
-
-                                // Nom centré
-                                Text(
-                                    text = secretSanta.name,
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 24.sp
-                                    ),
-                                    color = ChristmasColors.AppBackground
+                            Box {
+                                // Fond décoratif rouge en haut
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(140.dp)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors = listOf(
+                                                    ChristmasColors.AppButtonRed.copy(alpha = 0.8f),
+                                                    ChristmasColors.AppButtonRed.copy(alpha = 0.4f),
+                                                    Color.Transparent
+                                                )
+                                            )
+                                        )
                                 )
 
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                // Date limite centrée
-                                Row(
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Icon(
-                                        Icons.Default.CalendarToday,
-                                        contentDescription = null,
-                                        tint = ChristmasColors.AppBackground,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "Date limite: ${formatDate(secretSanta.deadline)}",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                // Nb participants centré
-                                Row(
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        Icons.Default.Person,
-                                        contentDescription = null,
-                                        tint = ChristmasColors.AppBackground,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "${secretSanta.participants.size} participants",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    // Statut tirage
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (secretSanta.drawDone)
-                                    ChristmasColors.AppBackground.copy(alpha = 0.2f)
-                                else
-                                    ChristmasColors.AppButtonRed.copy(alpha = 0.15f)
-                            ),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = if (secretSanta.drawDone) "✅" else "⏳",
-                                        fontSize = 24.sp
-                                    )
-                                    Text(
-                                        text = if (secretSanta.drawDone) "Tirage effectué" else "Tirage non effectué",
-                                        fontWeight = FontWeight.Bold,
-                                        color = ChristmasColors.White
-                                    )
-                                }
-
-                                if (!secretSanta.drawDone) {
-                                    Button(
-                                        onClick = {
-                                            viewModel.onEvent(SecretSantaDetailsEvent.PerformDraw)
-                                        },
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = ChristmasColors.AppButtonRed
-                                        ),
-                                        enabled = !state.isPerformingDraw,
-                                        shape = RoundedCornerShape(12.dp)
+                                    // Icône
+                                    Box(
+                                        modifier = Modifier
+                                            .size(100.dp)
+                                            .clip(CircleShape)
+                                            .background(ChristmasColors.White),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        if (state.isPerformingDraw) {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(20.dp),
-                                                color = ChristmasColors.White,
-                                                strokeWidth = 2.dp
+                                        Text(text = "🎁", fontSize = 56.sp)
+                                    }
+
+                                    Spacer(modifier = Modifier.height(20.dp))
+
+                                    // Nom
+                                    Text(
+                                        text = secretSanta.name,
+                                        style = MaterialTheme.typography.headlineMedium.copy(
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 26.sp
+                                        ),
+                                        color = ChristmasColors.AppBackground,
+                                        textAlign = TextAlign.Center
+                                    )
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    // Infos en grille
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Text(text = "📅", fontSize = 28.sp)
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = formatDate(secretSanta.deadline),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                textAlign = TextAlign.Center
                                             )
-                                        } else {
-                                            Text("Tirer au sort")
+                                        }
+
+                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Text(text = "👥", fontSize = 28.sp)
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = "${secretSanta.participants.size}",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
+                                        if (!secretSanta.budget.isNullOrEmpty()) {
+                                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                                Text(text = "💰", fontSize = 28.sp)
+                                                Spacer(modifier = Modifier.height(4.dp))
+                                                Text(
+                                                    text = secretSanta.budget,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.Bold,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -272,73 +254,217 @@ fun SecretSantaDetailsScreen(
                         }
                     }
 
-                    // Votre attribution
-                    if (secretSanta.drawDone && secretSanta.assignments.containsKey(currentUserId)) {
+                    // ========== DESCRIPTION ==========
+                    if (!secretSanta.description.isNullOrEmpty()) {
                         item {
-                            val gifteeId = secretSanta.assignments[currentUserId]
-                            val giftee = secretSanta.participants.find { it.id == gifteeId }
-
-                            if (giftee != null) {
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = ChristmasColors.SkyBlue.copy(alpha = 0.4f)
-                                    ),
-                                    shape = RoundedCornerShape(16.dp)
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = ChristmasColors.SkyBlue.copy(alpha = 0.2f)
+                                ),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
-                                    Column(
-                                        modifier = Modifier.padding(24.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    Text(text = "📝", fontSize = 24.sp)
+                                    Text(
+                                        text = secretSanta.description,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = ChristmasColors.White,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // ========== STATUT TIRAGE ==========
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (secretSanta.drawDone)
+                                    Color(0xFF4CAF50).copy(alpha = 0.2f)
+                                else
+                                    ChristmasColors.AppButtonRed.copy(alpha = 0.9f) // ROUGE VISIBLE
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Text(
+                                        text = if (secretSanta.drawDone) "✅" else "🎲",
+                                        fontSize = 32.sp
+                                    )
+                                    Text(
+                                        text = if (secretSanta.drawDone)
+                                            "Tirage effectué"
+                                        else
+                                            "Tirage non effectué",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = ChristmasColors.White
+                                    )
+                                }
+
+                                if (!secretSanta.drawDone && state.isOrganizer) {
+                                    Button(
+                                        onClick = {
+                                            viewModel.onEvent(SecretSantaDetailsEvent.PerformDraw)
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = ChristmasColors.White
+                                        ),
+                                        enabled = !state.isPerformingDraw,
+                                        shape = RoundedCornerShape(12.dp),
+                                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                                     ) {
-                                        Text(text = "🎅", fontSize = 48.sp)
-                                        Spacer(modifier = Modifier.height(12.dp))
-                                        Text(
-                                            text = "Vous offrez à :",
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = ChristmasColors.White
-                                        )
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        Text(
-                                            text = giftee.name,
-                                            style = MaterialTheme.typography.headlineMedium.copy(
-                                                fontWeight = FontWeight.Bold
-                                            ),
-                                            color = ChristmasColors.White
-                                        )
+                                        if (state.isPerformingDraw) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.size(20.dp),
+                                                color = ChristmasColors.AppButtonRed,
+                                                strokeWidth = 2.dp
+                                            )
+                                        } else {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Text("🎲")
+                                                Text(
+                                                    "Tirer au sort",
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = ChristmasColors.AppButtonRed
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
 
-                    // Titre participants
-                    item {
-                        Text(
-                            text = "Participants (${secretSanta.participants.size})",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = ChristmasColors.White
-                        )
+                    // ========== QUI VOUS AVEZ PIOCHÉ (CARTE SÉPARÉE VISIBLE) ==========
+                    if (secretSanta.drawDone && userParticipant != null) {
+                        val gifteeId = secretSanta.assignments[userParticipant.id]
+                        val giftee = secretSanta.participants.find { it.id == gifteeId }
+
+                        if (giftee != null) {
+                            item {
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = ChristmasColors.AppButtonRed.copy(alpha = 0.95f)
+                                    ),
+                                    shape = RoundedCornerShape(20.dp),
+                                    elevation = CardDefaults.cardElevation(12.dp)
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(28.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(text = "🎅", fontSize = 64.sp)
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Text(
+                                            text = "Vous offrez à :",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = ChristmasColors.White.copy(alpha = 0.9f),
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Spacer(modifier = Modifier.height(12.dp))
+                                        Text(
+                                            text = giftee.name,
+                                            style = MaterialTheme.typography.displaySmall.copy(
+                                                fontWeight = FontWeight.ExtraBold,
+                                                fontSize = 36.sp
+                                            ),
+                                            color = ChristmasColors.White,
+                                            textAlign = TextAlign.Center
+                                        )
+                                        Spacer(modifier = Modifier.height(20.dp))
+
+                                        // Bouton Liste de souhaits
+                                        Button(
+                                            onClick = { /* TODO: Navigation vers wishlist */ },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = ChristmasColors.White
+                                            ),
+                                            shape = RoundedCornerShape(12.dp),
+                                            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                            ) {
+                                                Text(text = "🎁", fontSize = 24.sp)
+                                                Text(
+                                                    "Voir sa liste de souhaits",
+                                                    color = ChristmasColors.AppButtonRed,
+                                                    fontWeight = FontWeight.ExtraBold,
+                                                    fontSize = 16.sp
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                    // Liste participants
+                    // ========== TITRE PARTICIPANTS ==========
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Participants (${secretSanta.participants.size})",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = ChristmasColors.White,
+                                fontSize = 22.sp
+                            )
+                            Text(text = "🎄", fontSize = 24.sp)
+                        }
+                    }
+
+                    // ========== LISTE PARTICIPANTS ==========
                     items(secretSanta.participants) { participant ->
                         val isYourGiftee = secretSanta.drawDone &&
-                                secretSanta.assignments[currentUserId] == participant.id
+                                userParticipant != null &&
+                                secretSanta.assignments[userParticipant.id] == participant.id
+                        val isCurrentUser = participant.userId == currentUserId ||
+                                participant.email.equals(currentUserEmail, ignoreCase = true)
 
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(
-                                containerColor = if (isYourGiftee)
-                                    ChristmasColors.SkyBlue.copy(alpha = 0.3f)
-                                else
-                                    ChristmasColors.White
+                                containerColor = when {
+                                    isYourGiftee -> ChristmasColors.AppButtonRed.copy(alpha = 0.2f)
+                                    else -> ChristmasColors.White
+                                }
                             ),
                             border = if (isYourGiftee)
-                                BorderStroke(3.dp, ChristmasColors.AppBackground)
+                                BorderStroke(3.dp, ChristmasColors.AppButtonRed)
                             else
                                 null,
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = CardDefaults.cardElevation(4.dp)
                         ) {
                             Row(
                                 modifier = Modifier
@@ -347,51 +473,96 @@ fun SecretSantaDetailsScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
+                                // Avatar
                                 Surface(
-                                    modifier = Modifier.size(50.dp),
+                                    modifier = Modifier.size(56.dp),
                                     shape = CircleShape,
-                                    color = ChristmasColors.AppBackground.copy(alpha = 0.2f)
+                                    color = if (isYourGiftee)
+                                        ChristmasColors.AppButtonRed.copy(alpha = 0.15f)
+                                    else
+                                        ChristmasColors.AppBackground.copy(alpha = 0.15f)
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Text(
-                                            text = participant.name.first().uppercase(),
-                                            style = MaterialTheme.typography.titleLarge,
-                                            fontWeight = FontWeight.Bold,
-                                            color = ChristmasColors.AppBackground
+                                            text = when {
+                                                participant.isOrganizer -> "👑"
+                                                isYourGiftee -> "🎁"
+                                                isCurrentUser -> "🎅"
+                                                else -> "🎄"
+                                            },
+                                            fontSize = 28.sp
                                         )
                                     }
                                 }
 
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
                                         Text(
                                             text = participant.name,
                                             style = MaterialTheme.typography.bodyLarge,
-                                            fontWeight = FontWeight.Medium
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 18.sp
                                         )
+
                                         if (isYourGiftee) {
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(text = "🎁", fontSize = 24.sp)
+                                            Text(text = "🎁", fontSize = 22.sp)
                                         }
                                     }
+
                                     Text(
                                         text = participant.email,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
+
+                                    if (participant.isOrganizer) {
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Surface(
+                                            color = ChristmasColors.AppButtonRed.copy(alpha = 0.15f),
+                                            shape = RoundedCornerShape(6.dp)
+                                        ) {
+                                            Text(
+                                                text = "Organisateur",
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = FontWeight.Bold,
+                                                color = ChristmasColors.AppButtonRed
+                                            )
+                                        }
+                                    }
                                 }
 
-                                if (participant.id == currentUserId) {
+                                if (isCurrentUser) {
                                     Surface(
                                         color = ChristmasColors.AppBackground,
-                                        shape = RoundedCornerShape(8.dp)
+                                        shape = RoundedCornerShape(10.dp)
                                     ) {
                                         Text(
                                             text = "Vous",
-                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                            style = MaterialTheme.typography.labelSmall,
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                            style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = ChristmasColors.White
+                                        )
+                                    }
+                                }
+
+                                // Corbeille (organisateur uniquement)
+                                if (state.isOrganizer && !isCurrentUser && !secretSanta.drawDone) {
+                                    IconButton(
+                                        onClick = {
+                                            viewModel.onEvent(
+                                                SecretSantaDetailsEvent.RemoveParticipant(participant.id)
+                                            )
+                                        }
+                                    ) {
+                                        Icon(
+                                            Icons.Default.Delete,
+                                            contentDescription = "Supprimer",
+                                            tint = ChristmasColors.AppButtonRed
                                         )
                                     }
                                 }
@@ -399,14 +570,15 @@ fun SecretSantaDetailsScreen(
                         }
                     }
 
-                    // Erreur
+                    // ========== ERREUR ==========
                     if (state.error != null) {
                         item {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(
                                     containerColor = ChristmasColors.AppButtonRed.copy(alpha = 0.2f)
-                                )
+                                ),
+                                shape = RoundedCornerShape(12.dp)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -443,6 +615,6 @@ fun SecretSantaDetailsScreen(
 }
 
 private fun formatDate(timestamp: Long): String {
-    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val sdf = SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH)
     return sdf.format(Date(timestamp))
 }

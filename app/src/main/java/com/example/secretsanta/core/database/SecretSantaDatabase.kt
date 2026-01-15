@@ -9,7 +9,7 @@ import com.example.secretsanta.data.local.entity.SecretSantaEntity
 
 @Database(
     entities = [UserEntity::class, SecretSantaEntity::class],
-    version = 2,  // ← CHANGEZ DE 1 À 2
+    version = 4,
     exportSchema = false
 )
 abstract class SecretSantaDatabase : RoomDatabase() {

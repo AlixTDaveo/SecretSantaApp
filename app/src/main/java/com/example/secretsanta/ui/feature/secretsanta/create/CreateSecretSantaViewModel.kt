@@ -32,6 +32,12 @@ class CreateSecretSantaViewModel @Inject constructor(
             is CreateSecretSantaEvent.DeadlineChanged -> {
                 _state.value = _state.value.copy(deadline = event.deadline, error = null)
             }
+            is CreateSecretSantaEvent.BudgetChanged -> {
+                _state.value = _state.value.copy(budget = event.budget, error = null)
+            }
+            is CreateSecretSantaEvent.DescriptionChanged -> {
+                _state.value = _state.value.copy(description = event.description, error = null)
+            }
             is CreateSecretSantaEvent.ParticipantNameChanged -> {
                 _state.value = _state.value.copy(
                     currentParticipantName = event.name,
@@ -102,7 +108,6 @@ class CreateSecretSantaViewModel @Inject constructor(
     private fun createSecretSanta() {
         viewModelScope.launch {
             try {
-                // Validation
                 if (_state.value.name.trim().isEmpty()) {
                     _state.value = _state.value.copy(error = "Le nom du groupe est requis")
                     return@launch
@@ -121,15 +126,26 @@ class CreateSecretSantaViewModel @Inject constructor(
                 _state.value = _state.value.copy(isLoading = true, error = null)
 
                 val currentUserId = firebaseAuth.currentUser?.uid ?: ""
+                val currentUserEmail = firebaseAuth.currentUser?.email ?: ""
+
+                val participantsWithOrganizer = _state.value.participants.map { participant ->
+                    if (participant.email.equals(currentUserEmail, ignoreCase = true)) {
+                        participant.copy(isOrganizer = true, userId = currentUserId)
+                    } else {
+                        participant
+                    }
+                }
 
                 val secretSanta = SecretSanta(
                     id = UUID.randomUUID().toString(),
                     name = _state.value.name.trim(),
                     deadline = _state.value.deadline,
-                    participants = _state.value.participants,
+                    participants = participantsWithOrganizer,
                     creatorId = currentUserId,
                     drawDone = false,
-                    assignments = emptyMap()
+                    assignments = emptyMap(),
+                    budget = _state.value.budget.trim().ifEmpty { null },
+                    description = _state.value.description.trim().ifEmpty { null }
                 )
 
                 Log.d("CreateVM", "Creating Secret Santa: ${secretSanta.name}")
@@ -167,6 +183,8 @@ class CreateSecretSantaViewModel @Inject constructor(
 data class CreateSecretSantaState(
     val name: String = "",
     val deadline: Long = 0L,
+    val budget: String = "",
+    val description: String = "",
     val participants: List<Participant> = emptyList(),
     val currentParticipantName: String = "",
     val currentParticipantEmail: String = "",
@@ -178,6 +196,8 @@ data class CreateSecretSantaState(
 sealed class CreateSecretSantaEvent {
     data class NameChanged(val name: String) : CreateSecretSantaEvent()
     data class DeadlineChanged(val deadline: Long) : CreateSecretSantaEvent()
+    data class BudgetChanged(val budget: String) : CreateSecretSantaEvent()
+    data class DescriptionChanged(val description: String) : CreateSecretSantaEvent()
     data class ParticipantNameChanged(val name: String) : CreateSecretSantaEvent()
     data class ParticipantEmailChanged(val email: String) : CreateSecretSantaEvent()
     object AddParticipant : CreateSecretSantaEvent()
