@@ -23,13 +23,15 @@ class SecretSantaListViewModel @Inject constructor(
 
     init {
         val currentUserId = firebaseAuth.currentUser?.uid ?: ""
+        val currentEmail = firebaseAuth.currentUser?.email ?: ""
+
         if (currentUserId.isNotEmpty()) {
-            loadSecretSantas(currentUserId)
+            loadAllSecretSantas(currentUserId, currentEmail)
         }
     }
 
-    private fun loadSecretSantas(userId: String) {
-        secretSantaRepository.getSecretSantas(userId)
+    private fun loadAllSecretSantas(userId: String, userEmail: String) {
+        secretSantaRepository.getAllSecretSantasForUser(userId, userEmail)
             .onEach { secretSantas ->
                 _state.value = _state.value.copy(
                     secretSantas = secretSantas,

@@ -9,6 +9,8 @@ import com.example.secretsanta.domain.model.SecretSanta
 import com.example.secretsanta.domain.usecase.secretsanta.DeleteSecretSantaUseCase
 import com.example.secretsanta.domain.usecase.secretsanta.GetSecretSantaByIdUseCase
 import com.example.secretsanta.domain.usecase.secretsanta.PerformDrawUseCase
+import com.example.secretsanta.domain.repository.SecretSantaRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +22,8 @@ class SecretSantaDetailsViewModel @Inject constructor(
     private val getSecretSantaByIdUseCase: GetSecretSantaByIdUseCase,
     private val performDrawUseCase: PerformDrawUseCase,
     private val deleteSecretSantaUseCase: DeleteSecretSantaUseCase,
+    private val secretSantaRepository: SecretSantaRepository,
+    private val firebaseAuth: FirebaseAuth,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -36,9 +40,13 @@ class SecretSantaDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             getSecretSantaByIdUseCase(santaId).collect { secretSanta ->
                 if (secretSanta != null) {
+                    val currentUserId = firebaseAuth.currentUser?.uid ?: ""
+                    val isOrganizer = secretSanta.creatorId == currentUserId
+
                     _state.value = _state.value.copy(
                         secretSanta = secretSanta,
-                        isLoading = false
+                        isLoading = false,
+                        isOrganizer = isOrganizer
                     )
                 }
             }
@@ -47,12 +55,9 @@ class SecretSantaDetailsViewModel @Inject constructor(
 
     fun onEvent(event: SecretSantaDetailsEvent) {
         when (event) {
-            is SecretSantaDetailsEvent.PerformDraw -> {
-                performDraw()
-            }
-            is SecretSantaDetailsEvent.DeleteSecretSanta -> {
-                deleteSecretSanta()
-            }
+            is SecretSantaDetailsEvent.PerformDraw -> performDraw()
+            is SecretSantaDetailsEvent.DeleteSecretSanta -> deleteSecretSanta()
+            is SecretSantaDetailsEvent.RemoveParticipant -> removeParticipant(event.participantId)
             is SecretSantaDetailsEvent.DismissError -> {
                 _state.value = _state.value.copy(error = null)
             }
@@ -63,23 +68,18 @@ class SecretSantaDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val secretSanta = _state.value.secretSanta ?: return@launch
-
                 _state.value = _state.value.copy(isPerformingDraw = true, error = null)
-
-                Log.d("DetailsVM", "Performing draw for: ${secretSanta.name}")
 
                 val result = performDrawUseCase(secretSanta)
 
                 when (result) {
                     is Resource.Success -> {
-                        Log.d("DetailsVM", "Draw successful")
                         _state.value = _state.value.copy(
                             isPerformingDraw = false,
                             secretSanta = result.data
                         )
                     }
                     is Resource.Error -> {
-                        Log.e("DetailsVM", "Draw error: ${result.message}")
                         _state.value = _state.value.copy(
                             isPerformingDraw = false,
                             error = result.message
@@ -88,7 +88,6 @@ class SecretSantaDetailsViewModel @Inject constructor(
                     is Resource.Loading -> {}
                 }
             } catch (e: Exception) {
-                Log.e("DetailsVM", "Exception", e)
                 _state.value = _state.value.copy(
                     isPerformingDraw = false,
                     error = e.message
@@ -127,6 +126,26 @@ class SecretSantaDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun removeParticipant(participantId: String) {
+        viewModelScope.launch {
+            try {
+                val result = secretSantaRepository.removeParticipant(santaId, participantId)
+
+                when (result) {
+                    is Resource.Success -> {
+                        Log.d("DetailsVM", "Participant removed successfully")
+                    }
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(error = result.message)
+                    }
+                    is Resource.Loading -> {}
+                }
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = e.message)
+            }
+        }
+    }
 }
 
 data class SecretSantaDetailsState(
@@ -135,11 +154,13 @@ data class SecretSantaDetailsState(
     val isPerformingDraw: Boolean = false,
     val isDeleting: Boolean = false,
     val isDeleted: Boolean = false,
+    val isOrganizer: Boolean = false,
     val error: String? = null
 )
 
 sealed class SecretSantaDetailsEvent {
     object PerformDraw : SecretSantaDetailsEvent()
     object DeleteSecretSanta : SecretSantaDetailsEvent()
+    data class RemoveParticipant(val participantId: String) : SecretSantaDetailsEvent()
     object DismissError : SecretSantaDetailsEvent()
 }

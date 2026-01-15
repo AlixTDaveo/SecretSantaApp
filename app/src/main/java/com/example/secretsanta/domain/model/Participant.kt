@@ -5,7 +5,8 @@ data class Participant(
     val name: String,
     val email: String,
     val userId: String? = null,
-    val invitationStatus: InvitationStatus = InvitationStatus.PENDING
+    val invitationStatus: InvitationStatus = InvitationStatus.PENDING,
+    val isOrganizer: Boolean = false
 )
 enum class InvitationStatus {
     PENDING,    // Invitation envoyée, pas encore acceptée
