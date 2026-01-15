@@ -16,6 +16,7 @@ import com.example.secretsanta.ui.feature.auth.login.LoginScreen
 import com.example.secretsanta.ui.feature.auth.register.RegisterScreen
 import com.example.secretsanta.ui.feature.calendar.CalendarScreen
 import com.example.secretsanta.ui.feature.messaging.MessagingScreen
+import com.example.secretsanta.ui.feature.profile.EditProfileScreen
 import com.example.secretsanta.ui.feature.profile.ProfileScreen
 import com.example.secretsanta.ui.feature.secretsanta.create.CreateSecretSantaScreen
 import com.example.secretsanta.ui.feature.secretsanta.details.SecretSantaDetailsScreen
@@ -93,8 +94,22 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    onNavigateToEdit = { navController.navigate(Screen.EditProfile.route) },
+                    onLoggedOut = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Profile.route) { inclusive = true }
+                        }
+                    }
+                )
             }
+
+            composable(Screen.EditProfile.route) {
+                EditProfileScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
 
             composable(Screen.CreateSecretSanta.route) {
                 CreateSecretSantaScreen(navController)
@@ -108,6 +123,22 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
             ) { backStackEntry ->
                 val santaId = backStackEntry.arguments?.getString("santaId") ?: ""
                 SecretSantaDetailsScreen(navController, santaId)
+            }
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onNavigateToEdit = { navController.navigate(Screen.EditProfile.route) },
+                    onLoggedOut = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Profile.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(Screen.EditProfile.route) {
+                EditProfileScreen(
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }

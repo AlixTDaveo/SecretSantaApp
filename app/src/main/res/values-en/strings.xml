@@ -69,27 +69,36 @@
     <string name="error_email_required">L\'email est requis</string>
 
     <!-- Secret Santa Details -->
-    <string name="details_title">Détails du Secret Santa</string>
-    <string name="edit_secret_santa">Modifier</string>
-    <string name="delete_secret_santa">Supprimer</string>
-    <string name="organizer">Organisateur</string>
-    <string name="you_label">Vous</string>
+    <string name="details_title">Secret Santa Details</string>
+    <string name="edit_secret_santa">Edit</string>
+    <string name="delete_secret_santa">Delete</string>
+    <string name="participants_list">Participants list</string>
+    <string name="draw_not_done">Draw not done</string>
+    <string name="draw_done">Draw done</string>
+    <string name="perform_draw">Perform draw</string>
+    <string name="your_giftee">You give to:</string>
+    <string name="secret_messaging">Secret messaging</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="confirm_delete_title">Delete this Secret Santa?</string>
+    <string name="confirm_delete_message">This action is irreversible</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 
-    <!-- Draw -->
-    <string name="draw_not_done">Tirage non effectué</string>
-    <string name="draw_done">Tirage effectué</string>
-    <string name="perform_draw">Tirer au sort</string>
-    <string name="your_giftee">Vous offrez à :</string>
-    <string name="view_wishlist">Voir sa liste de souhaits</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_no_user">No user logged in.</string>
+    <string name="profile_display_name_label">Display name</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_edit_button">Edit profile</string>
+    <string name="profile_logout_button">Log out</string>
 
-    <!-- Actions -->
-    <string name="secret_messaging">Messagerie secrète</string>
-    <string name="wishlist">Liste de souhaits</string>
+    <string name="edit_profile_title">Edit profile</string>
+    <string name="edit_profile_display_name">Display name</string>
+    <string name="edit_profile_password_section">Password</string>
+    <string name="edit_profile_old_password">Current password</string>
+    <string name="edit_profile_new_password">New password</string>
+    <string name="edit_profile_confirm_new_password">Confirm new password</string>
 
-    <!-- Dialogs -->
-    <string name="confirm_delete_title">Supprimer ce Secret Santa ?</string>
-    <string name="confirm_delete_message">Cette action est irréversible</string>
-    <string name="cancel">Annuler</string>
-    <string name="delete">Supprimer</string>
-    <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="loading">Loading…</string>
+
 </resources>

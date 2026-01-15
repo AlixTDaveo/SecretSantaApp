@@ -91,5 +91,22 @@
     <string name="confirm_delete_message">Esta acción es irreversible</string>
     <string name="cancel">Cancelar</string>
     <string name="delete">Eliminar</string>
-    <string name="ok">OK</string>
+
+    <string name="profile_title">Perfil</string>
+    <string name="profile_no_user">Ningún usuario conectado.</string>
+    <string name="profile_display_name_label">Nombre mostrado</string>
+    <string name="profile_email_label">Correo electrónico</string>
+    <string name="profile_edit_button">Editar perfil</string>
+    <string name="profile_logout_button">Cerrar sesión</string>
+
+    <string name="edit_profile_title">Editar perfil</string>
+    <string name="edit_profile_display_name">Nombre mostrado</string>
+    <string name="edit_profile_password_section">Contraseña</string>
+    <string name="edit_profile_old_password">Contraseña actual</string>
+    <string name="edit_profile_new_password">Nueva contraseña</string>
+    <string name="edit_profile_confirm_new_password">Confirmar nueva contraseña</string>
+
+    <string name="save">Guardar</string>
+    <string name="loading">Cargando…</string>
+
 </resources>
