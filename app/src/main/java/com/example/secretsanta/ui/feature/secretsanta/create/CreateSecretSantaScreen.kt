@@ -27,6 +27,10 @@ import com.example.secretsanta.ui.components.SnowfallBackground
 import com.example.secretsanta.ui.theme.ChristmasColors
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import android.media.MediaPlayer
+import androidx.compose.runtime.DisposableEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +40,8 @@ fun CreateSecretSantaScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+
 
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) {
@@ -65,7 +71,7 @@ fun CreateSecretSantaScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            "Créer un Secret Santa",
+                            stringResource(R.string.create_secret_santa_title),
                             fontWeight = FontWeight.Bold
                         )
                     },
@@ -181,16 +187,22 @@ fun CreateSecretSantaScreen(
                             // Budget
                             OutlinedTextField(
                                 value = state.budget,
-                                onValueChange = {
-                                    viewModel.onEvent(CreateSecretSantaEvent.BudgetChanged(it))
+                                onValueChange = { newValue ->
+                                    // Ne garde que les chiffres
+                                    val filtered = newValue.filter { it.isDigit() }
+                                    viewModel.onEvent(CreateSecretSantaEvent.BudgetChanged(filtered))
                                 },
                                 label = { Text("Budget maximum") },
-                                placeholder = { Text("Ex: 30€") },
+                                placeholder = { Text("Ex: 30") },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 leadingIcon = {
                                     Text(text = "💰", fontSize = 20.sp)
                                 },
+                                suffix = {
+                                    Text("€", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                                },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = ChristmasColors.AppBackground,
                                     focusedLabelColor = ChristmasColors.AppBackground
@@ -292,7 +304,7 @@ fun CreateSecretSantaScreen(
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = ChristmasColors.SkyBlue
+                                    containerColor = Color(0xFF1565C0)
                                 ),
                                 shape = RoundedCornerShape(12.dp),
                                 contentPadding = PaddingValues(vertical = 14.dp)
@@ -424,6 +436,13 @@ fun CreateSecretSantaScreen(
                 item {
                     Button(
                         onClick = {
+                            try {
+                                mediaPlayer?.release()
+                                mediaPlayer = MediaPlayer.create(context, R.raw.ho_ho_ho)
+                                mediaPlayer?.start()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                             viewModel.onEvent(CreateSecretSantaEvent.CreateSecretSanta)
                         },
                         modifier = Modifier

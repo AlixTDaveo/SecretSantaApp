@@ -20,6 +20,11 @@ import com.example.secretsanta.ui.components.ChristmasScreen
 import com.example.secretsanta.ui.navigation.Screen
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.example.secretsanta.ui.components.SnowfallBackground
+import com.example.secretsanta.ui.theme.ChristmasColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,10 +34,25 @@ fun SecretSantaListScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    ChristmasScreen(
-        showSnowfall = true,
-        snowflakeCount = 40
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fond rouge festif avec flocons
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            ChristmasColors.AuthBackground,
+                            ChristmasColors.AuthBackground.copy(alpha = 0.85f),
+                        )
+                    )
+                )
+        ) {
+            SnowfallBackground(
+                snowflakeCount = 120,
+                snowColor = Color.White.copy(alpha = 0.9f)
+            )
+        }
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -43,8 +63,8 @@ fun SecretSantaListScreen(
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = Color.Transparent,
+                        titleContentColor = ChristmasColors.White
                     )
                 )
             },
@@ -53,13 +73,13 @@ fun SecretSantaListScreen(
                     onClick = {
                         navController.navigate(Screen.CreateSecretSanta.route)
                     },
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
+                    containerColor = ChristmasColors.AppButtonRed,
+                    contentColor = ChristmasColors.White
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Créer")
                 }
             },
-            containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f)
+            containerColor = Color.Transparent
         ) { padding ->
             Box(
                 modifier = Modifier
@@ -70,7 +90,7 @@ fun SecretSantaListScreen(
                     state.isLoading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center),
-                            color = MaterialTheme.colorScheme.primary
+                            color = ChristmasColors.White
                         )
                     }
                     state.secretSantas.isEmpty() -> {
@@ -84,7 +104,7 @@ fun SecretSantaListScreen(
                             Text(
                                 text = stringResource(R.string.no_secret_santas),
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = ChristmasColors.White
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(
@@ -92,10 +112,13 @@ fun SecretSantaListScreen(
                                     navController.navigate(Screen.CreateSecretSanta.route)
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary
+                                    containerColor = ChristmasColors.White
                                 )
                             ) {
-                                Text("Créer mon premier Secret Santa")
+                                Text(
+                                    "Créer mon premier Secret Santa",
+                                    color = ChristmasColors.White
+                                )
                             }
                         }
                     }
@@ -114,7 +137,7 @@ fun SecretSantaListScreen(
                                         )
                                     },
                                     colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
+                                        containerColor = ChristmasColors.White
                                     ),
                                     elevation = CardDefaults.cardElevation(
                                         defaultElevation = 4.dp
@@ -126,7 +149,7 @@ fun SecretSantaListScreen(
                                         Text(
                                             text = secretSanta.name,
                                             style = MaterialTheme.typography.titleMedium,
-                                            color = MaterialTheme.colorScheme.primary
+                                            color = ChristmasColors.AppButtonRed
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
 
@@ -142,7 +165,7 @@ fun SecretSantaListScreen(
                                             Text(
                                                 text = "${secretSanta.participants.size} participants",
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.secondary
+                                                color = ChristmasColors.AppBackground
                                             )
                                         }
                                     }
