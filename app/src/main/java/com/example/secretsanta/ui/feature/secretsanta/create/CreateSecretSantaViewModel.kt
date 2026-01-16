@@ -113,10 +113,14 @@ class CreateSecretSantaViewModel @Inject constructor(
                     return@launch
                 }
 
-                if (_state.value.participants.size < 2) {
-                    _state.value = _state.value.copy(error = "Au moins 2 participants requis")
+                // 🔽 MODIFICATION B1 : Minimum 3 participants
+                if (_state.value.participants.size < 3) {
+                    _state.value = _state.value.copy(
+                        error = "❌ Minimum 3 participants requis pour un Secret Santa"
+                    )
                     return@launch
                 }
+                // 🔼 FIN MODIFICATION B1
 
                 if (_state.value.deadline == 0L) {
                     _state.value = _state.value.copy(error = "Sélectionnez une date limite")

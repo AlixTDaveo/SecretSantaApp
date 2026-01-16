@@ -119,4 +119,7 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    //Google Translate
+    implementation("com.google.mlkit:translate:17.0.2")
 }
