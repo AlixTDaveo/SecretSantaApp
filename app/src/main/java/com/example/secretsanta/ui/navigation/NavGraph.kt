@@ -21,7 +21,7 @@ import com.example.secretsanta.ui.feature.profile.ProfileScreen
 import com.example.secretsanta.ui.feature.secretsanta.create.CreateSecretSantaScreen
 import com.example.secretsanta.ui.feature.secretsanta.details.SecretSantaDetailsScreen
 import com.example.secretsanta.ui.feature.secretsanta.list.SecretSantaListScreen
-// import com.example.secretsanta.ui.feature.wishlist.WishlistScreen  // ← SUPPRIMÉ
+import com.example.secretsanta.ui.feature.wishlist.WishlistScreen  // ← SUPPRIMÉ
 
 @Composable
 fun NavGraph(startDestination: String = Screen.Login.route) {
@@ -31,7 +31,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
 
     val routesWithBottomNav = listOf(
         Screen.SecretSantaList.route,
-        // Screen.Wishlist.route,  // ← SUPPRIMÉ
+        Screen.Wishlist.route,
         Screen.Messaging.route,
         Screen.Calendar.route,
         Screen.Profile.route
@@ -81,16 +81,16 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
                 SecretSantaListScreen(navController)
             }
 
-            // composable(Screen.Wishlist.route) {  // ← SUPPRIMÉ
-            //     WishlistScreen()
-            // }
+            composable(Screen.Wishlist.route) {
+                 WishlistScreen()
+            }
 
             composable(Screen.Messaging.route) {
                 MessagingScreen()
             }
 
             composable(Screen.Calendar.route) {
-                CalendarScreen()
+                CalendarScreen(navController=navController)
             }
 
             composable(Screen.Profile.route) {

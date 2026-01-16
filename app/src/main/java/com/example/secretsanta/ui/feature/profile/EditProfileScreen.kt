@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.secretsanta.R
+import com.example.secretsanta.ui.components.SnowfallBackground
 import com.example.secretsanta.ui.theme.ChristmasColors
 
 @Composable
@@ -49,6 +51,23 @@ fun EditProfileScreen(
             )
             .padding(24.dp)
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            ChristmasColors.AuthBackground,
+                            ChristmasColors.AuthBackground.copy(alpha = 0.92f)
+                        )
+                    )
+                )
+        ) {
+            SnowfallBackground(
+                snowflakeCount = 80,
+                snowColor = Color.White.copy(alpha = 0.8f)
+            )
+        }
         Card(
             modifier = Modifier
                 .align(Alignment.Center)

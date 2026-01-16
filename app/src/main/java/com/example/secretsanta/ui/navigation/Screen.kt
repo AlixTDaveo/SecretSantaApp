@@ -7,7 +7,7 @@ sealed class Screen(val route: String) {
 
     // Main Navigation (avec Bottom Nav)
     object SecretSantaList : Screen("secret_santa_list")
-    // object Wishlist : Screen("wishlist")  // ← SUPPRIMÉ
+    object Wishlist : Screen("wishlist")
     object Messaging : Screen("messaging")
     object Calendar : Screen("calendar")
     object Profile : Screen("profile")

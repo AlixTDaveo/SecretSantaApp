@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.secretsanta.ui.navigation.Screen
+import androidx.compose.material.icons.filled.CardGiftcard
 
 sealed class BottomNavItem(
     val route: String,
@@ -18,8 +19,14 @@ sealed class BottomNavItem(
     object SecretSantas : BottomNavItem(
         Screen.SecretSantaList.route,
         Icons.Default.CardGiftcard,
-        "Secret Santas"
+        "Accueil"
     )
+    object Wishlist : BottomNavItem(
+        route = Screen.Wishlist.route,
+        icon = Icons.Default.List,
+        label ="Ma liste"
+    )
+
     object Messaging : BottomNavItem(
         Screen.Messaging.route,
         Icons.Default.Message,
@@ -41,6 +48,7 @@ sealed class BottomNavItem(
 fun BottomNavBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.SecretSantas,
+        BottomNavItem.Wishlist,
         BottomNavItem.Messaging,
         BottomNavItem.Calendar,
         BottomNavItem.Profile

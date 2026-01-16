@@ -25,10 +25,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.secretsanta.R
 import com.example.secretsanta.ui.components.SnowfallBackground
+import com.example.secretsanta.ui.navigation.Screen
 import com.example.secretsanta.ui.theme.ChristmasColors
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.material.icons.filled.Message
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,10 +199,26 @@ fun SecretSantaDetailsScreen(
 
                                     Spacer(modifier = Modifier.height(16.dp))
 
-                                    // Infos en grille
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = "📅",
+                                            fontSize = 28.sp
+                                        )
+                                        Text(
+                                            text = formatDate(secretSanta.deadline),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center,
+                                            color = Color.Black
+                                        )
+                                    }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+
+                                    // ========== PARTICIPANTS | BUDGET (plus de date au milieu) ==========
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween, // Au lieu de SpaceEvenly
+                                        horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         // GAUCHE : Participants
@@ -209,20 +228,6 @@ fun SecretSantaDetailsScreen(
                                                 style = MaterialTheme.typography.titleLarge,
                                                 fontWeight = FontWeight.Bold,
                                                 color = Color.Black
-                                            )
-                                        }
-
-                                        // MILIEU : Date
-                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Text(
-                                                text = "📅",
-                                                fontSize = 24.sp
-                                            )
-                                            Text(
-                                                text = formatDate(secretSanta.deadline),
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                fontWeight = FontWeight.Bold,
-                                                textAlign = TextAlign.Center
                                             )
                                         }
 
@@ -271,102 +276,72 @@ fun SecretSantaDetailsScreen(
                         }
                     }
 
-                    // ========== MA LISTE DE CADEAUX (PERSO) ==========
-                    item {
-                        Button(
-                            onClick = {
-                                // TODO: Navigation vers MA wishlist personnelle
-                                // navController.navigate("my_wishlist")
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFFCC11B)
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            contentPadding = PaddingValues(vertical = 14.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                Icon(
-                                    Icons.Default.List,
-                                    contentDescription = null,
-                                    tint = ChristmasColors.White
-                                )
-                                Text(
-                                    "Ma liste de cadeaux",
-                                    color = ChristmasColors.White,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
-                                )
-                            }
-                        }
-                    }
-// 🔼 FIN MODIFICATION C4
 
-                    // ========== STATUT TIRAGE ==========
-                    item {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (secretSanta.drawDone)
-                                    Color(0xFF006054) // Vert foncé
-                                else
-                                    ChristmasColors.AppButtonRed.copy(alpha = 0.95f)
-                            ),
-                            shape = RoundedCornerShape(16.dp),
-                            elevation = CardDefaults.cardElevation(6.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = if (secretSanta.drawDone) "Tirage effectué" else "⏳ Tirage non effectué",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = ChristmasColors.White,
-                                    fontSize = 18.sp
-                                )
-                            }
-                        }
-                    }
-
-// Bouton tirage (si organisateur et pas encore tiré)
-                    if (state.isOrganizer && !secretSanta.drawDone) {
+                    // ========== SI TIRAGE NON FAIT ==========
+                    if (!secretSanta.drawDone) {
                         item {
-                            Button(
-                                onClick = { viewModel.onEvent(SecretSantaDetailsEvent.PerformDraw) },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp),
-                                enabled = !state.isPerformingDraw,
-                                colors = ButtonDefaults.buttonColors(
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
                                     containerColor = ChristmasColors.AppButtonRed
                                 ),
-                                shape = RoundedCornerShape(16.dp)
+                                shape = RoundedCornerShape(16.dp),
+                                elevation = CardDefaults.cardElevation(6.dp)
                             ) {
-                                if (state.isPerformingDraw) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(24.dp),
-                                        color = ChristmasColors.White
-                                    )
-                                } else {
-                                    Icon(Icons.Default.Refresh, contentDescription = null)
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    // Texte "Tirage non effectué"
                                     Text(
-                                        "Effectuer le tirage au sort",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
+                                        text = "⏳ Tirage non effectué",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = ChristmasColors.White,
+                                        fontSize = 18.sp
                                     )
+
+                                    // Bouton TIRER AU SORT (organisateur uniquement)
+                                    if (state.isOrganizer) {
+                                        Button(
+                                            onClick = { viewModel.onEvent(SecretSantaDetailsEvent.PerformDraw) },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            enabled = !state.isPerformingDraw,
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = ChristmasColors.White
+                                            ),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ) {
+                                            if (state.isPerformingDraw) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(24.dp),
+                                                    color = ChristmasColors.AppButtonRed,
+                                                    strokeWidth = 2.dp
+                                                )
+                                            } else {
+                                                Icon(
+                                                    Icons.Default.Refresh,
+                                                    contentDescription = null,
+                                                    tint = ChristmasColors.AppButtonRed
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text(
+                                                    "Effectuer le tirage au sort",
+                                                    fontSize = 16.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = ChristmasColors.AppButtonRed
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+
 
 
 
@@ -450,8 +425,107 @@ fun SecretSantaDetailsScreen(
                                                 )
                                             }
                                         }
+                                        Spacer(modifier = Modifier.height(12.dp))
+
+                                        // Bouton Messagerie
+                                        Button(
+                                            onClick = {
+                                                navController.navigate(Screen.Messaging.route)
+                                            },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = ChristmasColors.White
+                                            ),
+                                            shape = RoundedCornerShape(12.dp),
+                                            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 14.dp)
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                            ) {
+                                                Icon(
+                                                    Icons.Default.Message,
+                                                    contentDescription = null,
+                                                    tint = ChristmasColors.White
+                                                )
+                                                Text(
+                                                    "Lui envoyer un message",
+                                                    color = ChristmasColors.AppButtonRed,
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 16.sp
+                                                )
+                                            }
+                                        }
                                     }
                                 }
+                            }
+                        }
+                    }
+
+
+
+                    // ========== MA LISTE DE CADEAUX (PERSO) ==========
+                    item {
+                        Button(
+                            onClick = {
+                                // TODO: Navigation vers MA wishlist personnelle
+                                // navController.navigate("my_wishlist")
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFFFCC11B)
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            contentPadding = PaddingValues(vertical = 14.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.List,
+                                    contentDescription = null,
+                                    tint = ChristmasColors.White
+                                )
+                                Text(
+                                    "Ma liste de cadeaux",
+                                    color = ChristmasColors.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                )
+                            }
+                        }
+                    }
+
+
+                    // ========== BOUTON CALENDRIER (TOUJOURS VISIBLE) ==========
+                    item {
+                        Button(
+                            onClick = {
+                                navController.navigate(Screen.Calendar.route)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = ChristmasColors.AuthBackground
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            contentPadding = PaddingValues(vertical = 14.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.CalendarToday,
+                                    contentDescription = null,
+                                    tint = ChristmasColors.White
+                                )
+                                Text(
+                                    "Voir le calendrier",
+                                    color = ChristmasColors.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                )
                             }
                         }
                     }
