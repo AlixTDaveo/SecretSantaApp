@@ -109,4 +109,15 @@
     <string name="save">Enregistrer</string>
     <string name="loading">Chargement…</string>
 
+    <!-- Messagerie -->
+    <string name="messaging_title">Messagerie</string>
+    <string name="messaging_empty">Aucune conversation disponible.</string>
+    <string name="messaging_no_message_yet">Aucun message pour le moment</string>
+    <string name="chat_title">Chat</string>
+    <string name="send">Envoyer</string>
+    <string name="back">Retour</string>
+
+
+
+
 </resources>

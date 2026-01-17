@@ -46,6 +46,12 @@ class AuthRepositoryImpl @Inject constructor(
                     "displayName" to displayName
                 )
             ).await()
+            firestore.collection("public_users").document(firebaseUser.uid).set(
+                mapOf(
+                    "emailLower" to email.trim().lowercase(),
+                    "displayName" to displayName
+                )
+            ).await()
 
             // NOUVEAU : Vérifier les invitations en attente
             checkPendingInvitations(firebaseUser.uid, email)
@@ -128,7 +134,12 @@ class AuthRepositoryImpl @Inject constructor(
                 email = firebaseUser.email ?: email,
                 displayName = firebaseUser.displayName ?: "User"
             )
-
+            firestore.collection("public_users").document(firebaseUser.uid).set(
+                mapOf(
+                    "emailLower" to user.email.trim().lowercase(),
+                    "displayName" to user.displayName
+                )
+            ).await()
             // Save locally
             userDao.insertUser(
                 UserEntity(
@@ -191,6 +202,9 @@ class AuthRepositoryImpl @Inject constructor(
                     displayName = displayName
                 )
             )
+            firestore.collection("public_users").document(firebaseUser.uid)
+                .set(mapOf("displayName" to displayName), com.google.firebase.firestore.SetOptions.merge())
+                .await()
 
             Resource.Success(Unit)
         } catch (e: Exception) {
