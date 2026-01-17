@@ -109,4 +109,11 @@
     <string name="save">Guardar</string>
     <string name="loading">Cargando…</string>
 
+    <string name="messaging_title">Mensajes</string>
+    <string name="messaging_empty">No hay conversaciones disponibles.</string>
+    <string name="messaging_no_message_yet">Aún no hay mensajes</string>
+    <string name="chat_title">Chat</string>
+    <string name="send">Enviar</string>
+    <string name="back">Volver</string>
+
 </resources>

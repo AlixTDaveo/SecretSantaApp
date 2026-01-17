@@ -36,4 +36,12 @@ abstract class RepositoryModule {
     abstract fun bindWishlistRepository(
         impl: WishlistRepositoryImpl
     ): WishlistRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMessagingRepository(
+        impl: com.example.secretsanta.data.repository.MessagingRepositoryImpl
+    ): com.example.secretsanta.domain.repository.MessagingRepository
+
+
 }
