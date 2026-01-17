@@ -32,14 +32,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        ChristmasColors.AuthBackground,
-                        ChristmasColors.AuthBackground.copy(alpha = 0.92f)
-                    )
-                )
-            )
+            .background(color = ChristmasColors.AuthBackground)
             .padding(24.dp)
     ) {
         Box(

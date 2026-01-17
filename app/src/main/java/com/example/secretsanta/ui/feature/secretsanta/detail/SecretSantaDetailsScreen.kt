@@ -372,7 +372,7 @@ fun SecretSantaDetailsScreen(
                                         ) {
                                             // Cercle blanc derrière
                                             Surface(
-                                                modifier = Modifier.size(90.dp),
+                                                modifier = Modifier.size(1000.dp),
                                                 shape = CircleShape,
                                                 color = ChristmasColors.White,
                                                 shadowElevation = 4.dp
@@ -432,7 +432,6 @@ fun SecretSantaDetailsScreen(
                                             onClick = {
                                                 navController.navigate(Screen.Messaging.route)
                                             },
-                                            modifier = Modifier.fillMaxWidth(),
                                             colors = ButtonDefaults.buttonColors(
                                                 containerColor = ChristmasColors.White
                                             ),
@@ -446,12 +445,12 @@ fun SecretSantaDetailsScreen(
                                                 Icon(
                                                     Icons.Default.Message,
                                                     contentDescription = null,
-                                                    tint = ChristmasColors.White
+                                                    tint = ChristmasColors.AppButtonRed
                                                 )
                                                 Text(
                                                     "Lui envoyer un message",
                                                     color = ChristmasColors.AppButtonRed,
-                                                    fontWeight = FontWeight.Bold,
+                                                    fontWeight = FontWeight.ExtraBold,
                                                     fontSize = 16.sp
                                                 )
                                             }

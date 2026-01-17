@@ -41,6 +41,11 @@ import java.time.temporal.WeekFields
 import java.util.Locale
 import androidx.compose.material3.Divider
 import java.time.format.DateTimeFormatter
+import androidx.compose.animation.animateContentSize
+import androidx.compose.runtime.mutableStateOf
+import com.example.secretsanta.ui.components.ConfettiExplosion
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.heightIn
 
 
 private val SantaRed = ChristmasColors.AppButtonRed
@@ -51,7 +56,6 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-
     val locale = Locale.getDefault()
     val firstDayOfWeek = remember(locale) { WeekFields.of(locale).firstDayOfWeek }
     val weekdayHeaders: List<String> = remember(locale, firstDayOfWeek) {
@@ -60,29 +64,32 @@ fun CalendarScreen(
     val santasByDate = remember(state.secretSantas) {
         state.secretSantas.groupBy { it.deadline.toLocalDate() }
     }
-
     val monthCells = remember(state.currentMonth, firstDayOfWeek) {
         buildMonthCells(state.currentMonth, firstDayOfWeek)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        ChristmasColors.AuthBackground,
-                        ChristmasColors.AuthBackground.copy(alpha = 0.9f)
+    // 🔽 État pour les confettis AU NIVEAU GLOBAL
+    var triggerConfetti by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fond + Flocons
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            ChristmasColors.AuthBackground,
+                            ChristmasColors.AuthBackground.copy(alpha = 0.9f)
+                        )
                     )
                 )
+        ) {
+            SnowfallBackground(
+                snowflakeCount = 100,
+                snowColor = Color.White
             )
-    ) {
-
-        // Flocons
-        SnowfallBackground(
-            snowflakeCount = 100,
-            snowColor = Color.White
-        )
+        }
 
         // Contenu
         Column(
@@ -90,7 +97,6 @@ fun CalendarScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
             CalendarHeader(
                 currentMonth = state.currentMonth,
                 locale = locale,
@@ -108,9 +114,10 @@ fun CalendarScreen(
                 columns = GridCells.Fixed(7),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(bottom = 16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .heightIn(min = 300.dp, max = 400.dp) // Hauteur fixe
             ) {
                 items(monthCells) { dateOrNull ->
                     if (dateOrNull == null) {
@@ -129,15 +136,24 @@ fun CalendarScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // 🔽 Passer le callback pour déclencher les confettis
             SelectedDayDetails(
                 selectedDate = state.selectedDate,
                 santas = state.selectedSantas,
                 onOpenDetails = { santaId ->
                     navController.navigate(Screen.SecretSantaDetails.createRoute(santaId))
-                }
+                },
+                onProverbClick = { triggerConfetti = !triggerConfetti } // ✅ Callback
             )
+
             Spacer(Modifier.height(80.dp))
         }
+
+        // 🎉 CONFETTIS PAR-DESSUS TOUT (en dehors de la Column)
+        ConfettiExplosion(
+            trigger = triggerConfetti,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -244,13 +260,6 @@ private fun DayCell(
                         .clip(CircleShape)
                         .background(SantaRed)
                 )
-                if (santasCount > 1) {
-                    Text(
-                        text = "+${santasCount - 1}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = SantaRed
-                    )
-                }
             }
         }
     }
@@ -260,112 +269,136 @@ private fun DayCell(
 private fun SelectedDayDetails(
     selectedDate: LocalDate?,
     santas: List<SecretSanta>,
-    onOpenDetails: (String) -> Unit
+    onOpenDetails: (String) -> Unit,
+    onProverbClick: () -> Unit
 ) {
-    // Affiche seulement si une date est sélectionnée
     if (selectedDate != null) {
-        Spacer(Modifier.height(16.dp)) // Espace entre calendrier et liste
-
-        Card(
+        Column(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = ChristmasColors.White // Blanc
-            ),
-            elevation = CardDefaults.cardElevation(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
+            // DATE EN BLANC CENTRÉE
+            Text(
+                text = formatSelectedDate(selectedDate),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = ChristmasColors.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                // Titre de la date
-                Text(
-                    text = "📅 ${formatSelectedDate(selectedDate)}",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = ChristmasColors.AppButtonRed // Rouge
-                )
+            Spacer(Modifier.height(4.dp))
 
-                Spacer(Modifier.height(16.dp))
+            // 🔽 CARTE PROVERBE (sans Box, sans confettis dedans)
+            var proverbExpanded by remember(selectedDate) { mutableStateOf(false) }
 
-                when {
-                    santas.isEmpty() -> {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize(),
+                onClick = {
+                    if (!proverbExpanded) {
+                        onProverbClick() // Déclenche les confettis
+                    }
+                    proverbExpanded = !proverbExpanded
+                },
+                colors = CardDefaults.cardColors(
+                    containerColor = ChristmasColors.AppButtonRed
+                ),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (!proverbExpanded) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(text = "🎁", fontSize = 24.sp)
+                            Text(
+                                text = "Proverbe du jour",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = ChristmasColors.White
+                            )
+                        }
+                    } else {
                         Text(
-                            text = "Aucun Secret Santa prévu ce jour-là 🎅",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = ChristmasProverbs.getProverbForDate(selectedDate),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = ChristmasColors.White,
+                            textAlign = TextAlign.Center
                         )
                     }
-                    else -> {
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            santas.forEach { santa ->
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    onClick = { onOpenDetails(santa.id) },
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = ChristmasColors.White
-                                    ),
-                                    shape = RoundedCornerShape(16.dp),
-                                    elevation = CardDefaults.cardElevation(4.dp),
-                                    border = BorderStroke(1.dp, Color(0xFFE0E0E0)) // Bordure grise légère
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(16.dp)
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // 🔽 SECRET SANTAS (rétablis)
+            if (santas.isEmpty()) {
+                Text(
+                    text = "Aucun Secret Santa ce jour-là 🎅",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = ChristmasColors.White.copy(alpha = 0.85f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                santas.forEach { secretSanta ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { onOpenDetails(secretSanta.id) },
+                        colors = CardDefaults.cardColors(
+                            containerColor = ChristmasColors.White
+                        ),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = secretSanta.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = ChristmasColors.AppButtonRed,
+                                fontSize = 16.sp
+                            )
+
+                            Spacer(Modifier.height(8.dp))
+
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${secretSanta.participants.size} participants",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+
+                                if (secretSanta.drawDone) {
+                                    Surface(
+                                        color = Color(0xFF2E7D32),
+                                        shape = RoundedCornerShape(6.dp)
                                     ) {
-                                        // Nom du Secret Santa
                                         Text(
-                                            text = santa.name,
-                                            style = MaterialTheme.typography.titleMedium,
+                                            text = "Tiré",
+                                            modifier = Modifier.padding(
+                                                horizontal = 8.dp,
+                                                vertical = 4.dp
+                                            ),
+                                            style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
-                                            color = ChristmasColors.AppButtonRed, // Rouge
-                                            fontSize = 18.sp
+                                            color = ChristmasColors.White,
+                                            fontSize = 11.sp
                                         )
-
-                                        Spacer(Modifier.height(8.dp))
-
-                                        Divider(
-                                            color = ChristmasColors.AppBackground.copy(alpha = 0.2f),
-                                            thickness = 1.dp
-                                        )
-
-                                        Spacer(Modifier.height(8.dp))
-
-                                        // Infos
-                                        Row(
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            // Participants
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                            ) {
-                                                Text(text = "👥", fontSize = 16.sp)
-                                                Text(
-                                                    text = "${santa.participants.size} participants",
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    color = Color.Black // Noir
-                                                )
-                                            }
-
-                                            // Badge Tirage
-                                            if (santa.drawDone) {
-                                                Surface(
-                                                    color = Color(0xFF2E7D32), // Vert foncé
-                                                    shape = RoundedCornerShape(8.dp)
-                                                ) {
-                                                    Text(
-                                                        text = "✅ Tiré",
-                                                        modifier = Modifier.padding(
-                                                            horizontal = 10.dp,
-                                                            vertical = 5.dp
-                                                        ),
-                                                        style = MaterialTheme.typography.labelMedium,
-                                                        fontWeight = FontWeight.Bold,
-                                                        color = ChristmasColors.White,
-                                                        fontSize = 12.sp
-                                                    )
-                                                }
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -375,6 +408,11 @@ private fun SelectedDayDetails(
             }
         }
     }
+}
+
+private fun formatSelectedDate(date: LocalDate): String {
+    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH)
+    return date.format(formatter)
 }
 
 /* ---------------- Helpers dates ---------------- */
@@ -410,7 +448,3 @@ private fun weekOffset(day: DayOfWeek, firstDayOfWeek: DayOfWeek): Int {
 private fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate =
     Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate()
 
-private fun formatSelectedDate(date: LocalDate): String {
-    val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH)
-    return date.format(formatter)
-}
