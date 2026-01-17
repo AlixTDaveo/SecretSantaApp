@@ -61,6 +61,9 @@ class SecretSantaDetailsViewModel @Inject constructor(
             is SecretSantaDetailsEvent.DismissError -> {
                 _state.value = _state.value.copy(error = null)
             }
+            is SecretSantaDetailsEvent.ShowError -> {
+                _state.value = _state.value.copy(error = event.message)
+            }
         }
     }
 
@@ -163,4 +166,5 @@ sealed class SecretSantaDetailsEvent {
     object DeleteSecretSanta : SecretSantaDetailsEvent()
     data class RemoveParticipant(val participantId: String) : SecretSantaDetailsEvent()
     object DismissError : SecretSantaDetailsEvent()
+    data class ShowError(val message: String) : SecretSantaDetailsEvent()
 }

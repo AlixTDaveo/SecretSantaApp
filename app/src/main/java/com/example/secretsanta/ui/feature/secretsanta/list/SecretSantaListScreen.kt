@@ -112,7 +112,7 @@ fun SecretSantaListScreen(
                                     navController.navigate(Screen.CreateSecretSanta.route)
                                 },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = ChristmasColors.White
+                                    containerColor = ChristmasColors.AppButtonRed
                                 )
                             ) {
                                 Text(

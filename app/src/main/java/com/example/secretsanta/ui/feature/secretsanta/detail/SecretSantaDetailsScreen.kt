@@ -403,9 +403,19 @@ fun SecretSantaDetailsScreen(
                                         )
                                         Spacer(modifier = Modifier.height(20.dp))
 
-                                        // Bouton Liste de souhaits
+                                        // Bouton SA Liste de souhaits
                                         Button(
-                                            onClick = { /* TODO: Navigation vers wishlist */ },
+                                            onClick = { // clic voir wishlist filleul
+                                                val userId = giftee.userId
+                                                if (userId.isNullOrBlank()) {
+                                                    // Affiche un message d'erreur si le userId est vide
+                                                    viewModel.onEvent(
+                                                        SecretSantaDetailsEvent.ShowError("Ce participant n'a pas encore créé de compte")
+                                                    )
+                                                } else {
+                                                    navController.navigate(Screen.UserWishlist.createRoute(santaId, userId))
+                                                }
+                                            },
                                             colors = ButtonDefaults.buttonColors(
                                                 containerColor = ChristmasColors.White
                                             ),
@@ -467,8 +477,7 @@ fun SecretSantaDetailsScreen(
                     item {
                         Button(
                             onClick = {
-                                // TODO: Navigation vers MA wishlist personnelle
-                                // navController.navigate("my_wishlist")
+                                navController.navigate(Screen.Wishlist.route)
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(

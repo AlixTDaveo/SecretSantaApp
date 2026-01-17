@@ -21,7 +21,8 @@ import com.example.secretsanta.ui.feature.profile.ProfileScreen
 import com.example.secretsanta.ui.feature.secretsanta.create.CreateSecretSantaScreen
 import com.example.secretsanta.ui.feature.secretsanta.details.SecretSantaDetailsScreen
 import com.example.secretsanta.ui.feature.secretsanta.list.SecretSantaListScreen
-import com.example.secretsanta.ui.feature.wishlist.WishlistScreen  // ← SUPPRIMÉ
+import com.example.secretsanta.ui.feature.wishlist.WishlistScreen
+import com.example.secretsanta.ui.feature.wishlist.AddWishlistItemScreen
 
 @Composable
 fun NavGraph(startDestination: String = Screen.Login.route) {
@@ -37,11 +38,9 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
         Screen.Profile.route
     )
 
-    val showBottomNav = currentRoute in routesWithBottomNav
-
     Scaffold(
         bottomBar = {
-            if (showBottomNav) {
+            if (currentRoute in routesWithBottomNav) {
                 BottomNavBar(navController)
             }
         }
@@ -53,9 +52,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
         ) {
             composable(Screen.Login.route) {
                 LoginScreen(
-                    onNavigateToRegister = {
-                        navController.navigate(Screen.Register.route)
-                    },
+                    onNavigateToRegister = { navController.navigate(Screen.Register.route) },
                     onLoginSuccess = {
                         navController.navigate(Screen.SecretSantaList.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
@@ -66,9 +63,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
 
             composable(Screen.Register.route) {
                 RegisterScreen(
-                    onNavigateToLogin = {
-                        navController.popBackStack()
-                    },
+                    onNavigateToLogin = { navController.popBackStack() },
                     onRegisterSuccess = {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Register.route) { inclusive = true }
@@ -77,21 +72,10 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
                 )
             }
 
-            composable(Screen.SecretSantaList.route) {
-                SecretSantaListScreen(navController)
-            }
-
-            composable(Screen.Wishlist.route) {
-                 WishlistScreen()
-            }
-
-            composable(Screen.Messaging.route) {
-                MessagingScreen()
-            }
-
-            composable(Screen.Calendar.route) {
-                CalendarScreen(navController=navController)
-            }
+            composable(Screen.SecretSantaList.route) { SecretSantaListScreen(navController) }
+            composable(Screen.Wishlist.route) { WishlistScreen(navController) }
+            composable(Screen.Messaging.route) { MessagingScreen() }
+            composable(Screen.Calendar.route) { CalendarScreen(navController) }
 
             composable(Screen.Profile.route) {
                 ProfileScreen(
@@ -105,41 +89,27 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
             }
 
             composable(Screen.EditProfile.route) {
-                EditProfileScreen(
-                    onBack = { navController.popBackStack() }
-                )
+                EditProfileScreen(onBack = { navController.popBackStack() })
             }
 
-
-            composable(Screen.CreateSecretSanta.route) {
-                CreateSecretSantaScreen(navController)
-            }
+            composable(Screen.CreateSecretSanta.route) { CreateSecretSantaScreen(navController) }
 
             composable(
                 route = Screen.SecretSantaDetails.route,
-                arguments = listOf(
-                    navArgument("santaId") { type = NavType.StringType }
-                )
+                arguments = listOf(navArgument("santaId") { type = NavType.StringType })
             ) { backStackEntry ->
-                val santaId = backStackEntry.arguments?.getString("santaId") ?: ""
-                SecretSantaDetailsScreen(navController, santaId)
-            }
-            composable(Screen.Profile.route) {
-                ProfileScreen(
-                    onNavigateToEdit = { navController.navigate(Screen.EditProfile.route) },
-                    onLoggedOut = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Profile.route) { inclusive = true }
-                        }
-                    }
-                )
+                SecretSantaDetailsScreen(navController, backStackEntry.arguments?.getString("santaId") ?: "")
             }
 
-            composable(Screen.EditProfile.route) {
-                EditProfileScreen(
-                    onBack = { navController.popBackStack() }
+            composable(
+                route = Screen.UserWishlist.route,
+                arguments = listOf(
+                    navArgument("santaId") { type = NavType.StringType },
+                    navArgument("userId") { type = NavType.StringType }
                 )
-            }
+            ) { WishlistScreen(navController) }
+
+            composable(Screen.AddWishlistItem.route) { AddWishlistItemScreen(navController) }
         }
     }
 }

@@ -14,15 +14,35 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
 class CreateSecretSantaViewModel @Inject constructor(
     private val createSecretSantaUseCase: CreateSecretSantaUseCase,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CreateSecretSantaState())
     val state = _state.asStateFlow()
+
+    private suspend fun findUserIdByEmail(email: String): String? {
+        return try {
+            Log.d("CreateVM", "🔍 Searching userId for email: $email")
+            val snapshot = firestore.collection("users")
+                .whereEqualTo("email", email.lowercase().trim())
+                .get()
+                .await()
+
+            val userId = snapshot.documents.firstOrNull()?.id
+            Log.d("CreateVM", if (userId != null) "✅ Found userId: $userId" else "❌ No user found for $email")
+            userId
+        } catch (e: Exception) {
+            Log.e("CreateVM", "❌ Error finding user by email", e)
+            null
+        }
+    }
 
     fun onEvent(event: CreateSecretSantaEvent) {
         when (event) {
@@ -85,18 +105,25 @@ class CreateSecretSantaViewModel @Inject constructor(
             }
         }
 
-        val participant = Participant(
-            id = UUID.randomUUID().toString(),
-            name = name,
-            email = email
-        )
+        viewModelScope.launch {
+            val userId = findUserIdByEmail(email)
 
-        _state.value = _state.value.copy(
-            participants = _state.value.participants + participant,
-            currentParticipantName = "",
-            currentParticipantEmail = "",
-            error = null
-        )
+            val participant = Participant(
+                id = UUID.randomUUID().toString(),
+                name = name,
+                email = email,
+                userId = userId  // ✅ Rempli automatiquement si trouvé
+            )
+
+            _state.value = _state.value.copy(
+                participants = _state.value.participants + participant,
+                currentParticipantName = "",
+                currentParticipantEmail = "",
+                error = null
+            )
+
+            Log.d("CreateVM", "➕ Added participant: $name ($email) → userId: ${userId ?: "NOT FOUND"}")
+        }
     }
 
     private fun removeParticipant(participantId: String) {
