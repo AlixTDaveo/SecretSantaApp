@@ -101,4 +101,11 @@
     <string name="save">Save</string>
     <string name="loading">Loading…</string>
 
+    <string name="messaging_title">Messages</string>
+    <string name="messaging_empty">No conversations available.</string>
+    <string name="messaging_no_message_yet">No messages yet</string>
+    <string name="chat_title">Chat</string>
+    <string name="send">Send</string>
+    <string name="back">Back</string>
+
 </resources>

@@ -25,4 +25,11 @@ abstract class RepositoryModule {
     abstract fun bindSecretSantaRepository(
         secretSantaRepositoryImpl: SecretSantaRepositoryImpl
     ): SecretSantaRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMessagingRepository(
+        impl: com.example.secretsanta.data.repository.MessagingRepositoryImpl
+    ): com.example.secretsanta.domain.repository.MessagingRepository
+
 }

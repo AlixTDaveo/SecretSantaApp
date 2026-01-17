@@ -15,6 +15,7 @@ import com.example.secretsanta.ui.components.BottomNavBar
 import com.example.secretsanta.ui.feature.auth.login.LoginScreen
 import com.example.secretsanta.ui.feature.auth.register.RegisterScreen
 import com.example.secretsanta.ui.feature.calendar.CalendarScreen
+import com.example.secretsanta.ui.feature.messaging.ChatScreen
 import com.example.secretsanta.ui.feature.messaging.MessagingScreen
 import com.example.secretsanta.ui.feature.profile.EditProfileScreen
 import com.example.secretsanta.ui.feature.profile.ProfileScreen
@@ -85,9 +86,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
             //     WishlistScreen()
             // }
 
-            composable(Screen.Messaging.route) {
-                MessagingScreen()
-            }
+
 
             composable(Screen.Calendar.route) {
                 CalendarScreen()
@@ -140,6 +139,14 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
                     onBack = { navController.popBackStack() }
                 )
             }
+            composable(Screen.Messaging.route) {
+                MessagingScreen(navController = navController)
+            }
+
+            composable(Screen.Chat.route) {
+                ChatScreen(onBack = { navController.popBackStack() })
+            }
+
         }
     }
 }
