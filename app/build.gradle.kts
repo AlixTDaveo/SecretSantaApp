@@ -122,4 +122,11 @@ dependencies {
 
     //Google Translate
     implementation("com.google.mlkit:translate:17.0.2")
+
+    // Retrofit pour l'API
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Coil pour les images
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

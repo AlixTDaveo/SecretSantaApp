@@ -39,15 +39,23 @@ class CalendarViewModel @Inject constructor(
     private fun observeSecretSantas() {
         viewModelScope.launch {
             val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+            val email = FirebaseAuth.getInstance().currentUser?.email.orEmpty()
 
             if (uid.isBlank()) {
-                // Pas connecté => pas de données, pas de crash
                 _state.update { it.copy(secretSantas = emptyList()) }
                 return@launch
             }
 
             secretSantaRepository.getSecretSantas(uid).collect { santas ->
-                _state.update { it.copy(secretSantas = santas) }
+                // ✅ FILTRE AUSSI SUR L'EMAIL
+                val filteredSantas = santas.filter { santa ->
+                    santa.participants.any { participant ->
+                        participant.userId == uid ||
+                                participant.email.equals(email, ignoreCase = true)
+                    }
+                }
+
+                _state.update { it.copy(secretSantas = filteredSantas) }
             }
         }
     }

@@ -9,6 +9,11 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import com.example.secretsanta.data.remote.FakeStoreApi
+import com.example.secretsanta.domain.repository.WishlistRepository
+import com.example.secretsanta.data.repository.WishlistRepositoryImpl
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Provides
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -28,8 +33,15 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
+    abstract fun bindWishlistRepository(
+        impl: WishlistRepositoryImpl
+    ): WishlistRepository
+
+    @Binds
+    @Singleton
     abstract fun bindMessagingRepository(
         impl: com.example.secretsanta.data.repository.MessagingRepositoryImpl
     ): com.example.secretsanta.domain.repository.MessagingRepository
+
 
 }
