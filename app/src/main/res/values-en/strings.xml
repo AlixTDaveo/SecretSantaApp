@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Secret Santa</string>
+
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="send">Send</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="close">Close</string>
+
+    <!-- Auth - Login -->
+    <string name="login_title">Welcome to Secret Santa</string>
+    <string name="login_email_hint">Email or username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button">Log in</string>
+    <string name="login_no_account">No account? Sign up</string>
+
+    <!-- Auth - Register -->
+    <string name="register_title">Create an account</string>
+    <string name="register_display_name_hint">Display name</string>
+    <string name="register_email_hint">Email</string>
+    <string name="register_password_hint">Password</string>
+    <string name="register_confirm_password_hint">Confirm password</string>
+    <string name="register_button">Sign up</string>
+    <string name="register_has_account">Already have an account?</string>
+
+    <!-- Password Validation -->
+    <string name="password_too_short">Password must contain at least 8 characters</string>
+    <string name="password_no_uppercase">Password must contain at least one uppercase letter</string>
+    <string name="password_no_lowercase">Password must contain at least one lowercase letter</string>
+    <string name="password_no_digit">Password must contain at least one digit</string>
+    <string name="password_no_special">Password must contain at least one special character</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
+
+    <!-- Secret Santa List -->
+    <string name="my_secret_santas">My Secret Santas</string>
+    <string name="no_secret_santas">No Secret Santa</string>
+    <string name="create_first_secret_santa">Create my first Secret Santa</string>
+    <string name="participants_count">%d participants</string>
+    <string name="deadline_label">Deadline: %s</string>
+
+    <!-- Create Secret Santa -->
+    <string name="create_secret_santa_title">Create a Secret Santa</string>
+    <string name="general_information">General information</string>
+    <string name="group_name_label">Group name *</string>
+    <string name="group_name_placeholder">e.g. Christmas Family 2025</string>
+    <string name="deadline_label_short">Deadline *</string>
+    <string name="budget_label">Budget (optional)</string>
+    <string name="budget_placeholder">e.g. 30€</string>
+    <string name="description_label">Description (optional)</string>
+    <string name="description_placeholder">e.g. Family gift exchange</string>
+    <string name="add_participants">Add participants</string>
+    <string name="participant_name_hint">Participant name *</string>
+    <string name="participant_email_hint">Email *</string>
+    <string name="add_participant_button">Add</string>
+    <string name="participants_title">Participants (%d)</string>
+    <string name="create_secret_santa_button">Create Secret Santa</string>
+
+    <!-- Secret Santa Details -->
+    <string name="secret_santa_details_title">Secret Santa details</string>
+    <string name="confirm_delete_title">Confirm deletion</string>
+    <string name="confirm_delete_message">Do you really want to delete this Secret Santa?</string>
+    <string name="perform_draw">Perform draw</string>
+    <string name="draw_done">Draw completed!</string>
+    <string name="your_giftee">Your giftee</string>
+    <string name="your_giftee_is">It is %s! 🎁</string>
+    <string name="view_wishlist">View wishlist</string>
+    <string name="chat_with_giftee">Chat with them</string>
+    <string name="organizer_badge">Organizer</string>
+    <string name="you_badge">You</string>
+    <string name="draw_status_done">Drawn</string>
+    <string name="information_section">Information</string>
+    <string name="budget_info">Budget: %s</string>
+    <string name="deadline_info">Deadline: %s</string>
+    <string name="description_info">Description: %s</string>
+    <string name="participants_section">Participants (%d)</string>
+
+    <!-- Wishlist -->
+    <string name="dear_santa">🦌 Dear Santa 🦌</string>
+    <string name="my_list">🎁 My List (%d)</string>
+    <string name="their_list">🎁 Their List (%d)</string>
+    <string name="wishlist_empty_mine">Your list is empty! Add your wishes 🎅</string>
+    <string name="wishlist_footer">🎄 Signed with love 🎄</string>
+    <string name="already_reserved">Already reserved</string>
+    <string name="reserve_button">Reserve</string>
+    <string name="cancel_button">Cancel</string>
+
+    <!-- Add Wishlist Item -->
+    <string name="add_item_title">Add an idea</string>
+    <string name="write_to_santa">Write to Santa</string>
+    <string name="item_title_hint">I would like... *</string>
+    <string name="item_title_placeholder">e.g. A cookbook</string>
+    <string name="price_hint">Price</string>
+    <string name="price_placeholder">30</string>
+    <string name="link_hint">Link</string>
+    <string name="link_placeholder">https://...</string>
+    <string name="add_to_list_button">Add to my list</string>
+    <string name="search_product">Or search for a product</string>
+    <string name="search_hint_text">💡 Try: phone, laptop, shirt, watch, perfume, bag...</string>
+    <string name="search_placeholder">Search...</string>
+    <string name="search_min_chars">Type at least 2 characters</string>
+    <string name="searching">Searching...</string>
+    <string name="no_results">❌ No results</string>
+    <string name="results_count">✅ %d product(s)</string>
+    <string name="click_to_add">📦 Tap to add</string>
+    <string name="added">Added</string>
+    <string name="add">Add</string>
+    <string name="clear">Clear</string>
+
+    <!-- Messaging -->
+    <string name="messaging_title">Messaging</string>
+    <string name="messaging_empty">No conversations</string>
+    <string name="messaging_no_message_yet">No messages yet</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Chat</string>
+    <string name="message_placeholder">Message...</string>
+
+    <!-- Calendar -->
+    <string name="calendar_title">Calendar</string>
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="proverb_of_day">Proverb of the day</string>
+    <string name="no_secret_santa_today">No Secret Santa on this day 🎅</string>
+
+    <!-- Profile -->
+    <string name="profile_title">My Profile</string>
+    <string name="profile_display_name_label">Display name</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_edit_button">Edit my profile</string>
+    <string name="profile_logout_button">Log out</string>
+    <string name="profile_no_user">No user logged in</string>
+
+    <!-- Edit Profile -->
+    <string name="edit_profile_title">Edit my profile</string>
+    <string name="edit_profile_display_name">Display name</string>
+    <string name="edit_profile_password_section">Change password</string>
+    <string name="edit_profile_old_password">Old password</string>
+    <string name="edit_profile_new_password">New password</string>
+    <string name="edit_profile_confirm_new_password">Confirm new password</string>
+    <string name="budget_max_label">Maximum budget</string>
+    <string name="budget_max_placeholder">e.g. 30</string>
+
+    <string name="description_info_label">Description / Information</string>
+    <string name="description_info_placeholder">e.g. Meeting on December 24 at noon</string>
+
+    <string name="add_participant_title">Add a participant</string>
+
+    <string name="participant_name_required_label">Name *</string>
+    <string name="participant_name_placeholder">e.g. John Doe</string>
+
+    <string name="participant_email_required_label">Email *</string>
+    <string name="participant_email_placeholder">e.g. john@example.com</string>
+
+    <string name="currency_euro">€</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+
+    <string name="santa_budget_value">💰 %1$s€</string>
+    <string name="santa_budget_unknown">💰 --</string>
+
+    <string name="draw_not_done_label">⏳ Draw not completed</string>
+    <string name="perform_draw_button">Perform the draw</string>
+
+    <string name="you_give_to_label">You give to:</string>
+    <string name="participant_no_account_error">This participant has not created an account yet</string>
+
+    <string name="view_wishlist_button">View their wishlist</string>
+    <string name="send_message_to_person_button">Send them a message</string>
+
+    <string name="my_gift_list_button">My gift list</string>
+    <string name="view_calendar_button">View calendar</string>
+
+    <string name="open_calendar">Open calendar</string>
+    <string name="emoji_info">ℹ️</string>
+
+    <string name="calendar_previous_month">Previous month</string>
+    <string name="calendar_next_month">Next month</string>
+
+    <string name="proverb_of_the_day">Proverb of the day</string>
+    <string name="no_secret_santa_that_day">No Secret Santa on that day 🎅</string>
+
+    <string name="drawn_label">Drawn</string>
+
+    <string name="deadline_with_date">Deadline: %1$s</string>
+    <string name="create">Create</string>
+
+    <string name="wishlist_title_mine">My Letter to Santa</string>
+    <string name="wishlist_title_other">Their Letter to Santa</string>
+    <string name="wishlist_dear_santa">🦌 Dear Santa 🦌</string>
+    <string name="wishlist_intro_mine">Here is what I would like to receive:</string>
+    <string name="wishlist_intro_other">Here is what they would like to receive:</string>
+    <string name="wishlist_list_title_mine">🎁 My List (%1$d)</string>
+    <string name="wishlist_list_title_other">🎁 Their List (%1$d)</string>
+    <string name="wishlist_empty_other">No wishes for now 🎅</string>
+    <string name="wishlist_footer_signed">🎄 Signed with love 🎄</string>
+
+    <string name="reserve">Reserve</string>
+
+    <string name="wishlist_price_estimate">💰 ~%1$s€</string>
+    <string name="link_label_short">🔗 Link</string>
+    <string name="reserved_by_you">Reserved by you</string>
+
+    <string name="add_wishlist_item_title">Add an idea</string>
+    <string name="write_to_santa_title">Write to Santa</string>
+
+    <string name="wishlist_item_label">I would like... *</string>
+    <string name="wishlist_item_placeholder">e.g. A cookbook</string>
+
+    <string name="price_label">Price</string>
+
+    <string name="link_label">Link</string>
+
+    <string name="add_to_my_list_button">Add to my list</string>
+
+    <string name="search_product_title">Or search for a product</string>
+    <string name="search_examples_hint">💡 Try: phone, laptop, shirt, watch, perfume, bag...</string>
+    <string name="search_label">Search...</string>
+
+    <string name="search_in_progress">Searching...</string>
+    <string name="search_no_results">❌ No results</string>
+    <string name="search_results_count">✅ %1$d product(s)</string>
+
+    <string name="click_to_add_hint">📦 Tap to add</string>
+    <string name="product_price_eur">%1$d€</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_wishlist">My list</string>
+    <string name="menu_messages">Messages</string>
+    <string name="menu_calendar">Calendar</string>
+    <string name="menu_profile">Profile</string>
+
+
+</resources>
