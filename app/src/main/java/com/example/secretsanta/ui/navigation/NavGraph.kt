@@ -75,7 +75,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
 
             composable(Screen.SecretSantaList.route) { SecretSantaListScreen(navController) }
             composable(Screen.Wishlist.route) { WishlistScreen(navController) }
-            composable(Screen.Messaging.route) { MessagingScreen() }
+            composable(Screen.Messaging.route) { MessagingScreen(navController) }
             composable(Screen.Calendar.route) { CalendarScreen(navController) }
 
             composable(Screen.Profile.route) {
@@ -111,6 +111,18 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
             ) { WishlistScreen(navController) }
 
             composable(Screen.AddWishlistItem.route) { AddWishlistItemScreen(navController) }
+
+            composable(
+                route = Screen.Chat.route,
+                arguments = listOf(
+                    navArgument("conversationId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val conversationId = backStackEntry.arguments?.getString("conversationId") ?: ""
+                ChatScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

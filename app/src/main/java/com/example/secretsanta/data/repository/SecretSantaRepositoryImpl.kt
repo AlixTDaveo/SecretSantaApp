@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.callbackFlow
 
 class SecretSantaRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
@@ -35,29 +37,71 @@ class SecretSantaRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllSecretSantasForUser(userId: String, userEmail: String): Flow<List<SecretSanta>> {
-        return combine(
-            secretSantaDao.getSecretSantasByUser(userId),
-            secretSantaDao.getAllSecretSantas()
-        ) { createdByUser, allSantas ->
-            val createdIds = createdByUser.map { it.id }.toSet()
+    override fun getAllSecretSantasForUser(userId: String, userEmail: String): Flow<List<SecretSanta>> =
+        kotlinx.coroutines.flow.callbackFlow {
+            Log.d("SecretSantaRepo", "🎧 Listening to all Secret Santas for user: $userId")
 
-            // Secret Santas créés par l'utilisateur
-            val created = createdByUser.map { it.toDomain() }
-
-            // Secret Santas où l'utilisateur est participant
-            val participating = allSantas
-                .filter { it.id !in createdIds }
-                .map { it.toDomain() }
-                .filter { santa ->
-                    santa.participants.any {
-                        it.email.equals(userEmail, ignoreCase = true)
+            val registration = firestore.collection("secret_santas")
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.e("SecretSantaRepo", "❌ Listener error", error)
+                        close(error)
+                        return@addSnapshotListener
                     }
+
+                    val allSantas = snapshot?.documents?.mapNotNull { doc ->
+                        try {
+                            val data = doc.data ?: return@mapNotNull null
+
+                            @Suppress("UNCHECKED_CAST")
+                            val participantsList = (data["participants"] as? List<Map<String, Any>>)?.map {
+                                Participant(
+                                    id = it["id"] as? String ?: "",
+                                    name = it["name"] as? String ?: "",
+                                    email = it["email"] as? String ?: "",
+                                    userId = it["userId"] as? String,
+                                    isOrganizer = it["isOrganizer"] as? Boolean ?: false
+                                )
+                            } ?: emptyList()
+
+                            @Suppress("UNCHECKED_CAST")
+                            val assignmentsMap = data["assignments"] as? Map<String, String> ?: emptyMap()
+
+                            SecretSanta(
+                                id = doc.id,
+                                name = data["name"] as? String ?: "",
+                                deadline = data["deadline"] as? Long ?: 0L,
+                                participants = participantsList,
+                                creatorId = data["creatorId"] as? String ?: "",
+                                drawDone = data["drawDone"] as? Boolean ?: false,
+                                assignments = assignmentsMap,
+                                budget = data["budget"] as? String,
+                                description = data["description"] as? String
+                            )
+                        } catch (e: Exception) {
+                            Log.e("SecretSantaRepo", "Error parsing secret santa", e)
+                            null
+                        }
+                    } ?: emptyList()
+
+                    // ✅ Filtre : créés par moi OU participant
+                    val filtered = allSantas.filter { santa ->
+                        santa.creatorId == userId ||
+                                santa.participants.any { participant ->
+                                    participant.userId == userId ||
+                                            participant.email.equals(userEmail, ignoreCase = true)
+                                }
+                    }
+
+                    Log.d("SecretSantaRepo", "📥 Found ${filtered.size} Secret Santas for user")
+                    trySend(filtered)
                 }
 
-            (created + participating).distinctBy { it.id }
+            awaitClose {
+                Log.d("SecretSantaRepo", "🔌 Removing listener")
+                registration.remove()
+            }
         }
-    }
 
     override suspend fun createSecretSanta(secretSanta: SecretSanta): Resource<SecretSanta> {
         return try {

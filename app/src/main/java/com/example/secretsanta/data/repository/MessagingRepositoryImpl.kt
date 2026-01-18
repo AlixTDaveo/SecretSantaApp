@@ -19,16 +19,21 @@ class MessagingRepositoryImpl @Inject constructor(
 ) : MessagingRepository {
 
     override fun observeConversations(currentUid: String): Flow<List<Conversation>> = callbackFlow {
+        Log.d("MessagingRepo", "🎧 Starting observeConversations for uid: $currentUid")
+
         val registration = firestore.collection("conversations")
             .whereArrayContains("participants", currentUid)
-            .orderBy("lastMessageAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
+                    Log.e("MessagingRepo", "❌ Listener error", error)
                     close(error)
                     return@addSnapshotListener
                 }
 
+                Log.d("MessagingRepo", "📥 Received ${snapshot?.documents?.size ?: 0} conversations")
+
                 val conversations = snapshot?.documents?.map { doc ->
+                    Log.d("MessagingRepo", "  - ${doc.id}: participants=${doc.get("participants")}")
                     Conversation(
                         id = doc.id,
                         secretSantaId = doc.getString("secretSantaId") ?: "",
@@ -40,10 +45,14 @@ class MessagingRepositoryImpl @Inject constructor(
                     )
                 } ?: emptyList()
 
+                Log.d("MessagingRepo", "✅ Sending ${conversations.size} conversations to UI")
                 trySend(conversations)
             }
 
-        awaitClose { registration.remove() }
+        awaitClose {
+            Log.d("MessagingRepo", "🔌 Removing listener")
+            registration.remove()
+        }
     }
 
     override fun observeMessages(conversationId: String): Flow<List<Message>> = callbackFlow {
@@ -141,21 +150,32 @@ class MessagingRepositoryImpl @Inject constructor(
     }
     override suspend fun findUserIdByEmail(email: String): String? {
         return try {
-            val emailLower = email.trim().lowercase()
+            Log.d("MessagingRepo", "🔍 Searching userId for email: $email")
 
+            val emailQuery = email.trim().lowercase()
+
+            // ✅ Cherche dans users avec le champ "email"
             val snapshot = firestore
-                .collection("public_users") // 🔥 IMPORTANT
-                .whereEqualTo("emailLower", emailLower)
-                .limit(1)
-                .get()
+                .collection("users")
+                .get()  // Récupère tous les users
                 .await()
 
-            if (!snapshot.isEmpty) {
-                snapshot.documents.first().id
-            } else {
-                null
+            // Filtre manuellement (car whereEqualTo est case-sensitive)
+            val matchingDoc = snapshot.documents.firstOrNull { doc ->
+                val userEmail = doc.getString("email")?.trim()?.lowercase()
+                userEmail == emailQuery
             }
+
+            val userId = matchingDoc?.id
+            Log.d("MessagingRepo", if (userId != null) {
+                "✅ Found userId: $userId"
+            } else {
+                "❌ No user found for $email"
+            })
+
+            userId
         } catch (e: Exception) {
+            Log.e("MessagingRepo", "❌ Error finding user by email", e)
             null
         }
     }
