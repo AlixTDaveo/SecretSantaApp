@@ -16,6 +16,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import com.example.secretsanta.R
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +48,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.example.secretsanta.ui.components.ConfettiExplosion
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.res.stringResource
 
 
 private val SantaRed = ChristmasColors.AppButtonRed
@@ -168,7 +171,8 @@ private fun CalendarHeader(
         IconButton(onClick = onPrev) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Mois précédent",
+                contentDescription = stringResource(R.string.calendar_previous_month),
+
                 tint = Color.White
             )
         }
@@ -189,7 +193,8 @@ private fun CalendarHeader(
         IconButton(onClick = onNext) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Mois suivant",
+                contentDescription = stringResource(R.string.calendar_next_month),
+
                 tint = Color.White
             )
         }
@@ -321,7 +326,8 @@ private fun SelectedDayDetails(
                         ) {
                             Text(text = "🎁", fontSize = 24.sp)
                             Text(
-                                text = "Proverbe du jour",
+                                text = stringResource(R.string.proverb_of_the_day),
+
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = ChristmasColors.White
@@ -344,7 +350,7 @@ private fun SelectedDayDetails(
             // 🔽 SECRET SANTAS (rétablis)
             if (santas.isEmpty()) {
                 Text(
-                    text = "Aucun Secret Santa ce jour-là 🎅",
+                    text = stringResource(R.string.no_secret_santa_that_day),
                     style = MaterialTheme.typography.bodyMedium,
                     color = ChristmasColors.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center,
@@ -378,7 +384,8 @@ private fun SelectedDayDetails(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${secretSanta.participants.size} participants",
+                                    text = stringResource(R.string.participants_count, secretSanta.participants.size),
+
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -389,7 +396,7 @@ private fun SelectedDayDetails(
                                         shape = RoundedCornerShape(6.dp)
                                     ) {
                                         Text(
-                                            text = "Tiré",
+                                            text = stringResource(R.string.drawn_label),
                                             modifier = Modifier.padding(
                                                 horizontal = 8.dp,
                                                 vertical = 4.dp

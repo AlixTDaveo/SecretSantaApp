@@ -1,5 +1,6 @@
 package com.example.secretsanta.ui.feature.profile
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.secretsanta.domain.model.User
@@ -36,9 +37,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun logout() {
+        Log.d("ProfileViewModel", "🔴 User clicked LOGOUT")
         viewModelScope.launch {
+            Log.d("ProfileViewModel", "Calling authRepository.logout()...")
             authRepository.logout()
+            Log.d("ProfileViewModel", "✅ Logout successful, updating state")
             _state.update { it.copy(loggedOut = true) }
+            Log.d("ProfileViewModel", "🟢 State updated: loggedOut=true")
         }
     }
 }

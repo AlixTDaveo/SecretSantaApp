@@ -78,7 +78,8 @@ fun EditProfileScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.back),
+
                             tint = ChristmasColors.AuthBackground
                         )
                     }
@@ -129,7 +130,10 @@ fun EditProfileScreen(
                         IconButton(onClick = { oldVisible = !oldVisible }) {
                             Icon(
                                 imageVector = if (oldVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = null,
+                                contentDescription = stringResource(
+                                    if (oldVisible) R.string.hide_password else R.string.show_password
+                                ),
+
                                 tint = ChristmasColors.AuthBackground
                             )
                         }
@@ -155,7 +159,10 @@ fun EditProfileScreen(
                         IconButton(onClick = { newVisible = !newVisible }) {
                             Icon(
                                 imageVector = if (newVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = null,
+                                contentDescription = stringResource(
+                                    if (newVisible) R.string.hide_password else R.string.show_password
+                                ),
+
                                 tint = ChristmasColors.AuthBackground
                             )
                         }
@@ -181,7 +188,10 @@ fun EditProfileScreen(
                         IconButton(onClick = { confirmVisible = !confirmVisible }) {
                             Icon(
                                 imageVector = if (confirmVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = null,
+                                contentDescription = stringResource(
+                                    if (confirmVisible) R.string.hide_password else R.string.show_password
+                                ),
+
                                 tint = ChristmasColors.AuthBackground
                             )
                         }

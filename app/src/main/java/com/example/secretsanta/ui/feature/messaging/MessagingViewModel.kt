@@ -59,8 +59,20 @@ class MessagingViewModel @Inject constructor(
 
             // 2) écouter les conversations firestore
             messagingRepository.observeConversations(uid)
-                .combine(titleByConversationId) { convos, titles ->
-                    convos.map { c ->
+            // 2) écouter les conversations firestore + filtrer par Secret Santas existants
+            combine(
+                messagingRepository.observeConversations(uid),
+                titleByConversationId,
+                secretSantaRepository.getAllSecretSantasForUser(uid, email)
+            ) { convos, titles, santas ->
+
+                // Liste des IDs de Secret Santas qui existent encore
+                val existingSantaIds = santas.map { it.id }.toSet()
+
+                // Filter + map
+                convos
+                    .filter { c -> c.secretSantaId in existingSantaIds }  // ✅ Garde seulement si le SS existe
+                    .map { c ->
                         val (title, subtitle) = titles[c.id] ?: ("Conversation" to "")
                         ConversationUi(
                             id = c.id,
@@ -70,7 +82,8 @@ class MessagingViewModel @Inject constructor(
                             lastMessageAt = c.lastMessageAt
                         )
                     }
-                }
+                    .sortedByDescending { it.lastMessageAt ?: 0L }
+            }
                 .onEach { ui ->
                     _state.value = _state.value.copy(isLoading = false, conversations = ui, error = null)
                 }

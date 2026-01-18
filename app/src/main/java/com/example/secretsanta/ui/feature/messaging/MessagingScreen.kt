@@ -17,6 +17,11 @@ import com.example.secretsanta.R
 import com.example.secretsanta.ui.navigation.Screen
 import androidx.navigation.NavController
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.example.secretsanta.ui.components.SnowfallBackground
+import com.example.secretsanta.ui.theme.ChristmasColors
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,72 +32,127 @@ fun MessagingScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
-
-            title = { Text(stringResource(R.string.messaging_title)) }
-        )
-
-        state.info?.let {
-            Text(
-                text = it,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-
-        if (state.isLoading) {
-            Box(Modifier.fillMaxSize()) {
-                CircularProgressIndicator(Modifier.align(Alignment.Center))
-            }
-            return
-        }
-
-        state.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-
-        if (state.conversations.isEmpty()) {
-            Box(Modifier.fillMaxSize()) {
-                Text(
-                    text = stringResource(R.string.messaging_empty),
-                    modifier = Modifier.align(Alignment.Center)
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Fond vert festif avec flocons
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            ChristmasColors.AuthBackground,
+                            ChristmasColors.AuthBackground.copy(alpha = 0.85f),
+                        )
+                    )
                 )
-            }
-            return
+        ) {
+            SnowfallBackground(
+                snowflakeCount = 120,
+                snowColor = Color.White.copy(alpha = 0.9f)
+            )
         }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(state.conversations) { c ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = LocalIndication.current
-                        ) {
-                            navController.navigate(Screen.Chat.createRoute(c.id))
-                        }
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(R.string.messaging_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = ChristmasColors.White
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = ChristmasColors.White
+                    )
+                )
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+            ) {
+                state.info?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp),
+                        color = ChristmasColors.White
+                    )
+                }
+
+                if (state.isLoading) {
+                    Box(Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = ChristmasColors.White
+                        )
+                    }
+                    return@Scaffold
+                }
+
+                state.error?.let {
+                    Text(
+                        text = it,
+                        color = ChristmasColors.White,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                if (state.conversations.isEmpty()) {
+                    Box(Modifier.fillMaxSize()) {
+                        Text(
+                            text = stringResource(R.string.messaging_empty),
+                            modifier = Modifier.align(Alignment.Center),
+                            color = ChristmasColors.White,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                    return@Scaffold
+                }
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Column(Modifier.padding(14.dp)) {
-                        Text(text = c.title, style = MaterialTheme.typography.titleMedium)
-                        if (c.lastMessage != null) {
-                            Spacer(Modifier.height(6.dp))
-                            Text(text = c.lastMessage, style = MaterialTheme.typography.bodyMedium)
-                        } else {
-                            Spacer(Modifier.height(6.dp))
-                            Text(
-                                text = stringResource(R.string.messaging_no_message_yet),
-                                style = MaterialTheme.typography.bodyMedium
+                    items(state.conversations) { c ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = LocalIndication.current
+                                ) {
+                                    navController.navigate(Screen.Chat.createRoute(c.id))
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = ChristmasColors.White
+                            ),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 4.dp
                             )
+                        ) {
+                            Column(Modifier.padding(14.dp)) {
+                                Text(
+                                    text = c.title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = ChristmasColors.AppButtonRed
+                                )
+                                Spacer(Modifier.height(6.dp))
+                                Text(
+                                    text = c.lastMessage ?: stringResource(R.string.messaging_no_message_yet),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = if (c.lastMessage != null) {
+                                        MaterialTheme.colorScheme.onSurface
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurfaceVariant
+                                    }
+                                )
+                            }
                         }
                     }
                 }

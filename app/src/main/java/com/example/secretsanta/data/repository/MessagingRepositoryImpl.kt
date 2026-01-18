@@ -7,6 +7,7 @@ import com.example.secretsanta.domain.model.Message
 import com.example.secretsanta.domain.repository.MessagingRepository
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,16 @@ class MessagingRepositoryImpl @Inject constructor(
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.e("MessagingRepo", "❌ Listener error", error)
+
+                    // ✅ FIX : Gestion spécifique du logout (comme SecretSantaRepository)
+                    if (error is FirebaseFirestoreException &&
+                        error.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                        Log.w("MessagingRepo", "⚠️ User logged out, closing listener gracefully")
+                        trySend(emptyList())
+                        close()
+                        return@addSnapshotListener
+                    }
+
                     close(error)
                     return@addSnapshotListener
                 }
@@ -56,12 +67,25 @@ class MessagingRepositoryImpl @Inject constructor(
     }
 
     override fun observeMessages(conversationId: String): Flow<List<Message>> = callbackFlow {
+        Log.d("MessagingRepo", "🎧 Starting observeMessages for conversation: $conversationId")
+
         val registration = firestore.collection("conversations")
             .document(conversationId)
             .collection("messages")
             .orderBy("createdAt", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
+                    Log.e("MessagingRepo", "❌ Messages listener error", error)
+
+                    // ✅ FIX : Même protection que conversations
+                    if (error is FirebaseFirestoreException &&
+                        error.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                        Log.w("MessagingRepo", "⚠️ User logged out during chat, closing gracefully")
+                        trySend(emptyList())
+                        close()
+                        return@addSnapshotListener
+                    }
+
                     close(error)
                     return@addSnapshotListener
                 }
@@ -76,10 +100,14 @@ class MessagingRepositoryImpl @Inject constructor(
                     )
                 } ?: emptyList()
 
+                Log.d("MessagingRepo", "📥 Received ${messages.size} messages")
                 trySend(messages)
             }
 
-        awaitClose { registration.remove() }
+        awaitClose {
+            Log.d("MessagingRepo", "🔌 Removing messages listener")
+            registration.remove()
+        }
     }
 
     override suspend fun ensureConversationExists(
@@ -89,6 +117,8 @@ class MessagingRepositoryImpl @Inject constructor(
         uidB: String
     ): Resource<Unit> {
         return try {
+            Log.d("MessagingRepo", "🔧 Ensuring conversation exists: $conversationId")
+
             val ref = firestore.collection("conversations").document(conversationId)
 
             // Pas de get() (sinon PERMISSION_DENIED sur doc non existant)
@@ -104,13 +134,13 @@ class MessagingRepositoryImpl @Inject constructor(
                 com.google.firebase.firestore.SetOptions.merge()
             ).await()
 
+            Log.d("MessagingRepo", "✅ Conversation ensured: $conversationId")
             Resource.Success(Unit)
         } catch (e: Exception) {
+            Log.e("MessagingRepo", "❌ Failed to ensure conversation", e)
             Resource.Error(e.message ?: "Failed to create conversation")
         }
     }
-
-
 
     override suspend fun sendMessage(
         conversationId: String,
@@ -118,6 +148,8 @@ class MessagingRepositoryImpl @Inject constructor(
         text: String
     ): Resource<Unit> {
         return try {
+            Log.d("MessagingRepo", "📤 Sending message to $conversationId from $senderId")
+
             val now = System.currentTimeMillis()
             val convoRef = firestore.collection("conversations").document(conversationId)
             val msgRef = convoRef.collection("messages").document()
@@ -143,35 +175,37 @@ class MessagingRepositoryImpl @Inject constructor(
                 )
             }.await()
 
+            Log.d("MessagingRepo", "✅ Message sent successfully")
             Resource.Success(Unit)
         } catch (e: Exception) {
+            Log.e("MessagingRepo", "❌ Failed to send message", e)
             Resource.Error(e.message ?: "Failed to send message")
         }
     }
+
     override suspend fun findUserIdByEmail(email: String): String? {
         return try {
             Log.d("MessagingRepo", "🔍 Searching userId for email: $email")
 
             val emailQuery = email.trim().lowercase()
 
-            // ✅ Cherche dans users avec le champ "email"
+            // ✅ OPTIMISATION : Utilise public_users avec index emailLower au lieu de télécharger TOUS les users
+            // Avant : firestore.collection("users").get() → télécharge TOUT (lent + coûteux)
+            // Après : requête indexée sur 1 seul document (100x plus rapide)
             val snapshot = firestore
-                .collection("users")
-                .get()  // Récupère tous les users
+                .collection("public_users")
+                .whereEqualTo("emailLower", emailQuery)
+                .limit(1)
+                .get()
                 .await()
 
-            // Filtre manuellement (car whereEqualTo est case-sensitive)
-            val matchingDoc = snapshot.documents.firstOrNull { doc ->
-                val userEmail = doc.getString("email")?.trim()?.lowercase()
-                userEmail == emailQuery
-            }
+            val userId = snapshot.documents.firstOrNull()?.id
 
-            val userId = matchingDoc?.id
-            Log.d("MessagingRepo", if (userId != null) {
-                "✅ Found userId: $userId"
+            if (userId != null) {
+                Log.d("MessagingRepo", "✅ Found userId: $userId for email: $email")
             } else {
-                "❌ No user found for $email"
-            })
+                Log.w("MessagingRepo", "⚠️ No user found for email: $email")
+            }
 
             userId
         } catch (e: Exception) {
@@ -180,5 +214,51 @@ class MessagingRepositoryImpl @Inject constructor(
         }
     }
 
+    // ✅ NOUVEAU : Supprime toutes les conversations (+ messages) d'un Secret Santa
+    override suspend fun deleteConversationsBySecretSanta(secretSantaId: String): Resource<Unit> {
+        return try {
+            Log.d("MessagingRepo", "🗑️ Deleting conversations for Secret Santa: $secretSantaId")
 
+            // 1️⃣ Récupère toutes les conversations liées à ce Secret Santa
+            val conversationsSnapshot = firestore.collection("conversations")
+                .whereEqualTo("secretSantaId", secretSantaId)
+                .get()
+                .await()
+
+            if (conversationsSnapshot.isEmpty) {
+                Log.d("MessagingRepo", "ℹ️ No conversations found for Secret Santa: $secretSantaId")
+                return Resource.Success(Unit)
+            }
+
+            Log.d("MessagingRepo", "📋 Found ${conversationsSnapshot.size()} conversations to delete")
+
+            // 2️⃣ Supprime chaque conversation et ses messages
+            conversationsSnapshot.documents.forEach { conversationDoc ->
+                val conversationId = conversationDoc.id
+                Log.d("MessagingRepo", "  🗑️ Deleting conversation: $conversationId")
+
+                // Supprime tous les messages de cette conversation
+                val messagesSnapshot = conversationDoc.reference
+                    .collection("messages")
+                    .get()
+                    .await()
+
+                Log.d("MessagingRepo", "    📧 Deleting ${messagesSnapshot.size()} messages")
+
+                messagesSnapshot.documents.forEach { messageDoc ->
+                    messageDoc.reference.delete().await()
+                }
+
+                // Supprime la conversation elle-même
+                conversationDoc.reference.delete().await()
+                Log.d("MessagingRepo", "  ✅ Conversation deleted: $conversationId")
+            }
+
+            Log.d("MessagingRepo", "🟢 All conversations deleted successfully for Secret Santa: $secretSantaId")
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Log.e("MessagingRepo", "❌ Error deleting conversations for Secret Santa: $secretSantaId", e)
+            Resource.Error(e.message ?: "Failed to delete conversations")
+        }
+    }
 }
