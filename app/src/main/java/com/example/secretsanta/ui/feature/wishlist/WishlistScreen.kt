@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,9 @@ import com.example.secretsanta.ui.components.SnowfallBackground
 import com.example.secretsanta.ui.navigation.Screen
 import com.example.secretsanta.ui.theme.ChristmasColors
 import coil.compose.AsyncImage
+import com.example.secretsanta.R
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,9 +72,10 @@ fun WishlistScreen(
                             Text("🎅")
                             Text(
                                 text = if (state.isViewingOtherUser)
-                                    "Sa Lettre au Père Noël"
+                                    stringResource(R.string.wishlist_title_other)
                                 else
-                                    "Ma Lettre au Père Noël",
+                                    stringResource(R.string.wishlist_title_mine),
+
                                 fontFamily = FontFamily.Cursive,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
@@ -79,7 +84,7 @@ fun WishlistScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, "Retour")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -98,7 +103,7 @@ fun WishlistScreen(
                         contentColor = Color.White,
                         shape = CircleShape
                     ) {
-                        Icon(Icons.Default.Add, "Ajouter", modifier = Modifier.size(28.dp))
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add), modifier = Modifier.size(28.dp))
                     }
                 }
             },
@@ -135,7 +140,7 @@ fun WishlistScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = "🦌 Cher Père Noël 🦌",
+                                        text = stringResource(R.string.wishlist_dear_santa),
                                         fontSize = 24.sp,
                                         fontFamily = FontFamily.Cursive,
                                         fontWeight = FontWeight.Bold,
@@ -144,9 +149,10 @@ fun WishlistScreen(
                                     Spacer(Modifier.height(8.dp))
                                     Text(
                                         text = if (state.isViewingOtherUser)
-                                            "Voici ce qu'il/elle aimerait recevoir :"
+                                            stringResource(R.string.wishlist_intro_other)
                                         else
-                                            "Voici ce que j'aimerais recevoir :",
+                                            stringResource(R.string.wishlist_intro_mine)
+                                        ,
                                         fontSize = 16.sp,
                                         fontFamily = FontFamily.Cursive,
                                         textAlign = TextAlign.Center,
@@ -160,9 +166,9 @@ fun WishlistScreen(
                         item {
                             Text(
                                 text = if (state.isViewingOtherUser)
-                                    "🎁 Sa Liste (${state.items.size})"
+                                    stringResource(R.string.wishlist_list_title_other, state.items.size)
                                 else
-                                    "🎁 Ma Liste (${state.items.size})",
+                                    stringResource(R.string.wishlist_list_title_mine, state.items.size),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = FontFamily.Cursive,
@@ -189,9 +195,9 @@ fun WishlistScreen(
                                         Spacer(Modifier.height(12.dp))
                                         Text(
                                             text = if (state.isViewingOtherUser)
-                                                "Aucun souhait pour le moment 🎅"
+                                                stringResource(R.string.wishlist_empty_other)
                                             else
-                                                "Ta liste est vide !\nAppuie sur + pour ajouter tes souhaits 🎄",
+                                                stringResource(R.string.wishlist_empty_mine),
                                             textAlign = TextAlign.Center,
                                             color = Color(0xFF5D4037),
                                             fontStyle = FontStyle.Italic,
@@ -222,7 +228,7 @@ fun WishlistScreen(
                         // ========== FOOTER ==========
                         item {
                             Text(
-                                text = "🎄 Signé avec amour 🎄",
+                                text = stringResource(R.string.wishlist_footer_signed),
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily.Cursive,
                                 textAlign = TextAlign.Center,
@@ -244,7 +250,8 @@ fun WishlistScreen(
                     .padding(16.dp),
                 action = {
                     TextButton(onClick = { viewModel.onEvent(WishlistEvent.DismissError) }) {
-                        Text("OK", color = Color.White)
+                        Text(stringResource(R.string.ok), color = Color.White)
+
                     }
                 },
                 containerColor = ChristmasColors.AppButtonRed
@@ -316,7 +323,7 @@ private fun WishlistItemCard(
                 ) {
                     if (item.priceEstimate != null) {
                         Text(
-                            text = "💰 ~${item.priceEstimate}€",
+                            text = stringResource(R.string.wishlist_price_estimate, item.priceEstimate),
                             fontSize = 14.sp,
                             color = if (isReservedByOther) Color(0xFF9E9E9E) else ChristmasColors.AppButtonRed,
                             fontWeight = FontWeight.Medium
@@ -324,7 +331,8 @@ private fun WishlistItemCard(
                     }
                     if (item.link != null) {
                         Text(
-                            text = "🔗 Lien",
+                            text = stringResource(R.string.link_label_short)
+                            ,
                             fontSize = 12.sp,
                             color = if (isReservedByOther) Color(0xFF9E9E9E) else Color(0xFF1976D2)
                         )
@@ -339,7 +347,10 @@ private fun WishlistItemCard(
                         shape = RoundedCornerShape(6.dp)
                     ) {
                         Text(
-                            text = if (isReservedByMe) "Réservé par vous" else "Déjà réservé",
+                            text = if (isReservedByMe)
+                                stringResource(R.string.reserved_by_you)
+                            else
+                                stringResource(R.string.already_reserved),
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
@@ -353,7 +364,7 @@ private fun WishlistItemCard(
             if (isOwner) {
                 // Propriétaire : corbeille
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, "Supprimer", tint = ChristmasColors.AppButtonRed)
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = ChristmasColors.AppButtonRed)
                 }
             } else if (!isReservedByOther) {
                 // Parrain : bouton réserver (sauf si déjà réservé par quelqu'un d'autre)
@@ -366,7 +377,10 @@ private fun WishlistItemCard(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        text = if (isReservedByMe) "Annuler" else "Réserver",
+                        text = if (isReservedByMe)
+                            stringResource(R.string.cancel)
+                        else
+                            stringResource(R.string.reserve),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )

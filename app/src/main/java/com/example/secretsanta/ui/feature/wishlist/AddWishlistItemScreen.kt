@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import com.example.secretsanta.domain.model.ProductSuggestion
 import com.example.secretsanta.ui.components.SnowfallBackground
 import com.example.secretsanta.ui.theme.ChristmasColors
+import androidx.compose.ui.res.stringResource
+import com.example.secretsanta.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +67,7 @@ fun AddWishlistItemScreen(
                         ) {
                             Text("✨")
                             Text(
-                                "Ajouter une idée",
+                                stringResource(R.string.add_wishlist_item_title),
                                 fontFamily = FontFamily.Cursive,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
@@ -74,7 +76,7 @@ fun AddWishlistItemScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, "Retour")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -106,9 +108,9 @@ fun AddWishlistItemScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Text("🦌", fontSize = 24.sp)
-                                Text(
-                                    "Écrire au Père Noël",
-                                    fontSize = 18.sp,
+                                Text(stringResource(R.string.write_to_santa_title),
+
+                                fontSize = 18.sp,
                                     fontFamily = FontFamily.Cursive,
                                     fontWeight = FontWeight.Bold,
                                     color = ChristmasColors.AppBackground
@@ -120,8 +122,9 @@ fun AddWishlistItemScreen(
                             OutlinedTextField(
                                 value = state.title,
                                 onValueChange = { viewModel.onEvent(AddWishlistItemEvent.TitleChanged(it)) },
-                                label = { Text("Je voudrais... *") },
-                                placeholder = { Text("Ex: Un livre de cuisine") },
+                                label = { Text(stringResource(R.string.wishlist_item_label)) },
+                                placeholder = { Text(stringResource(R.string.wishlist_item_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 leadingIcon = { Text("🎁", fontSize = 18.sp) },
@@ -140,9 +143,10 @@ fun AddWishlistItemScreen(
                                 OutlinedTextField(
                                     value = state.price,
                                     onValueChange = { viewModel.onEvent(AddWishlistItemEvent.PriceChanged(it)) },
-                                    label = { Text("Prix") },
-                                    placeholder = { Text("30") },
-                                    modifier = Modifier.weight(0.4f),
+                                    label = { Text(stringResource(R.string.price_label)) } ,
+                                    placeholder = { Text(stringResource(R.string.price_placeholder)) },
+
+                                            modifier = Modifier.weight(0.4f),
                                     singleLine = true,
                                     leadingIcon = { Text("💰", fontSize = 16.sp) },
                                     suffix = { Text("€") },
@@ -156,7 +160,7 @@ fun AddWishlistItemScreen(
                                 OutlinedTextField(
                                     value = state.link,
                                     onValueChange = { viewModel.onEvent(AddWishlistItemEvent.LinkChanged(it)) },
-                                    label = { Text("Lien") },
+                                    label = { Text(stringResource(R.string.link_label)) },
                                     placeholder = { Text("https://...") },
                                     modifier = Modifier.weight(0.6f),
                                     singleLine = true,
@@ -187,7 +191,7 @@ fun AddWishlistItemScreen(
                                 } else {
                                     Text("🎄", fontSize = 20.sp)
                                     Spacer(Modifier.width(8.dp))
-                                    Text("Ajouter à ma liste", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                    Text(stringResource(R.string.add_to_my_list_button), fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 }
                             }
                         }
@@ -208,7 +212,7 @@ fun AddWishlistItemScreen(
                             ) {
                                 Text("🔍", fontSize = 24.sp)
                                 Text(
-                                    "Ou chercher un produit",
+                                    stringResource(R.string.search_product_title),
                                     fontSize = 18.sp,
                                     fontFamily = FontFamily.Cursive,
                                     fontWeight = FontWeight.Bold,
@@ -218,8 +222,7 @@ fun AddWishlistItemScreen(
 
                             Spacer(Modifier.height(8.dp))
                             Text(
-                                "💡 Essaie: phone, laptop, shirt, watch, perfume, bag...",
-                                style = MaterialTheme.typography.bodySmall,
+                                stringResource(R.string.search_examples_hint),                                style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF666666)
                             )
 
@@ -228,14 +231,14 @@ fun AddWishlistItemScreen(
                             OutlinedTextField(
                                 value = state.searchQuery,
                                 onValueChange = { viewModel.onEvent(AddWishlistItemEvent.SearchQueryChanged(it)) },
-                                label = { Text("Rechercher...") },
+                                label = { Text(stringResource(R.string.search_label)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 leadingIcon = { Icon(Icons.Default.Search, null, tint = Color(0xFFFF6F00)) },
                                 trailingIcon = {
                                     if (state.searchQuery.isNotEmpty()) {
                                         IconButton(onClick = { viewModel.onEvent(AddWishlistItemEvent.ClearSearch) }) {
-                                            Icon(Icons.Default.Clear, "Effacer")
+                                            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear))
                                         }
                                     }
                                 },
@@ -248,17 +251,47 @@ fun AddWishlistItemScreen(
                             Spacer(Modifier.height(8.dp))
 
                             when {
-                                state.searchQuery.length < 2 -> Text("Tape au moins 2 caractères", color = Color.Gray)
+                                state.searchQuery.length < 2 -> {
+                                    Text(
+                                        text = stringResource(R.string.search_min_chars),
+                                        color = Color.Gray
+                                    )
+                                }
+
                                 state.isSearching -> {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = Color(0xFFFF6F00))
-                                        Spacer(Modifier.width(8.dp))
-                                        Text("Recherche en cours...", color = Color.Gray)
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(16.dp),
+                                            strokeWidth = 2.dp,
+                                            color = Color(0xFFFF6F00)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = stringResource(R.string.search_in_progress),
+                                            color = Color.Gray
+                                        )
                                     }
                                 }
-                                state.noResults -> Text("❌ Aucun résultat", color = ChristmasColors.AppButtonRed)
-                                state.suggestions.isNotEmpty() -> Text("✅ ${state.suggestions.size} produit(s)", color = Color(0xFF4CAF50), fontWeight = FontWeight.Medium)
+
+                                state.noResults -> {
+                                    Text(
+                                        text = stringResource(R.string.search_no_results),
+                                        color = ChristmasColors.AppButtonRed
+                                    )
+                                }
+
+                                state.suggestions.isNotEmpty() -> {
+                                    Text(
+                                        text = stringResource(
+                                            R.string.search_results_count,
+                                            state.suggestions.size
+                                        ),
+                                        color = Color(0xFF4CAF50),
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
                             }
+
                         }
                     }
                 }
@@ -266,7 +299,7 @@ fun AddWishlistItemScreen(
                 // ========== RÉSULTATS ==========
                 if (state.suggestions.isNotEmpty()) {
                     item {
-                        Text("📦 Clique pour ajouter", fontSize = 16.sp, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold, color = Color(0xFF5D4037))
+                        Text(stringResource(R.string.click_to_add_hint), fontSize = 16.sp, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold, color = Color(0xFF5D4037))
                     }
 
                     items(state.suggestions) { suggestion ->
@@ -320,7 +353,7 @@ private fun ProductCard(suggestion: ProductSuggestion, isAdded: Boolean, onAdd: 
                 Text(suggestion.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium, maxLines = 2)
                 Spacer(Modifier.height(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("${suggestion.price.toInt()}€", fontWeight = FontWeight.Bold, color = ChristmasColors.AppButtonRed)
+                    Text(stringResource(R.string.product_price_eur, suggestion.price.toInt()), fontWeight = FontWeight.Bold, color = ChristmasColors.AppButtonRed)
                     Surface(color = Color(0xFFE0E0E0), shape = RoundedCornerShape(4.dp)) {
                         Text(suggestion.category, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = Color.Gray)
                     }
@@ -328,10 +361,11 @@ private fun ProductCard(suggestion: ProductSuggestion, isAdded: Boolean, onAdd: 
             }
 
             if (isAdded) {
-                Icon(Icons.Default.CheckCircle, "Ajouté", tint = Color(0xFF4CAF50), modifier = Modifier.size(36.dp))
+
+                Icon(Icons.Default.CheckCircle, contentDescription = stringResource(R.string.added), tint = Color(0xFF4CAF50), modifier = Modifier.size(36.dp))
             } else {
                 IconButton(onClick = onAdd) {
-                    Icon(Icons.Default.AddCircle, "Ajouter", tint = ChristmasColors.AppBackground, modifier = Modifier.size(36.dp))
+                    Icon(Icons.Default.AddCircle, contentDescription = stringResource(R.string.add), tint = ChristmasColors.AppBackground, modifier = Modifier.size(36.dp))
                 }
             }
         }

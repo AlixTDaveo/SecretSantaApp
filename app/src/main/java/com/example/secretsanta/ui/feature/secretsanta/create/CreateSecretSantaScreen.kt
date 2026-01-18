@@ -69,15 +69,17 @@ fun CreateSecretSantaScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
+
                     title = {
                         Text(
-                            stringResource(R.string.create_secret_santa_title),
+                            stringResource(R.string.create_first_secret_santa),
                             fontWeight = FontWeight.Bold
                         )
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back))
+
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -113,7 +115,8 @@ fun CreateSecretSantaScreen(
                             ) {
                                 Text(text = "ℹ️", fontSize = 24.sp)
                                 Text(
-                                    text = "Informations générales",
+                                    text = stringResource(R.string.general_information),
+
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = ChristmasColors.AppBackground
@@ -128,8 +131,10 @@ fun CreateSecretSantaScreen(
                                 onValueChange = {
                                     viewModel.onEvent(CreateSecretSantaEvent.NameChanged(it))
                                 },
-                                label = { Text("Nom du groupe *") },
-                                placeholder = { Text("Ex: Famille Noël 2025") },
+                                label = { Text(stringResource(R.string.group_name_label)) },
+
+                                placeholder = { Text(stringResource(R.string.group_name_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 leadingIcon = {
@@ -147,7 +152,8 @@ fun CreateSecretSantaScreen(
                             OutlinedTextField(
                                 value = if (state.deadline == 0L) "" else formatDate(state.deadline),
                                 onValueChange = {},
-                                label = { Text("Date limite *") },
+                                label = { Text(stringResource(R.string.deadline_label_short)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 readOnly = true,
                                 leadingIcon = {
@@ -192,15 +198,18 @@ fun CreateSecretSantaScreen(
                                     val filtered = newValue.filter { it.isDigit() }
                                     viewModel.onEvent(CreateSecretSantaEvent.BudgetChanged(filtered))
                                 },
-                                label = { Text("Budget maximum") },
-                                placeholder = { Text("Ex: 30") },
+                                label = { Text(stringResource(R.string.budget_max_label)) },
+
+                                placeholder = { Text(stringResource(R.string.budget_max_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 leadingIcon = {
                                     Text(text = "💰", fontSize = 20.sp)
                                 },
                                 suffix = {
-                                    Text("€", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                                    Text(stringResource(R.string.currency_euro), fontWeight = FontWeight.Bold, fontSize = 18.sp)
+
                                 },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -217,8 +226,10 @@ fun CreateSecretSantaScreen(
                                 onValueChange = {
                                     viewModel.onEvent(CreateSecretSantaEvent.DescriptionChanged(it))
                                 },
-                                label = { Text("Description / Informations") },
-                                placeholder = { Text("Ex: RDV à la cafet le 24 décembre à midi") },
+                                label = { Text(stringResource(R.string.description_info_label)) },
+
+                                placeholder = { Text(stringResource(R.string.description_info_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 minLines = 3,
                                 maxLines = 5,
@@ -251,7 +262,8 @@ fun CreateSecretSantaScreen(
                             ) {
                                 Text(text = "👥", fontSize = 24.sp)
                                 Text(
-                                    text = "Ajouter un participant",
+                                    text = stringResource(R.string.add_participant_title),
+
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = ChristmasColors.AppBackground
@@ -267,8 +279,10 @@ fun CreateSecretSantaScreen(
                                         CreateSecretSantaEvent.ParticipantNameChanged(it)
                                     )
                                 },
-                                label = { Text("Nom *") },
-                                placeholder = { Text("Ex: Marie Dupont") },
+                                label = { Text(stringResource(R.string.participant_name_required_label)) },
+
+                                placeholder = { Text(stringResource(R.string.participant_name_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -286,8 +300,10 @@ fun CreateSecretSantaScreen(
                                         CreateSecretSantaEvent.ParticipantEmailChanged(it)
                                     )
                                 },
-                                label = { Text("Email *") },
-                                placeholder = { Text("Ex: marie@exemple.com") },
+                                label = { Text(stringResource(R.string.participant_email_required_label)) },
+
+                                placeholder = { Text(stringResource(R.string.participant_email_placeholder)) },
+
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -312,7 +328,8 @@ fun CreateSecretSantaScreen(
                                 Icon(Icons.Default.Add, contentDescription = null)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "Ajouter",
+                                    stringResource(R.string.add_participant_button),
+
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 )
@@ -330,7 +347,8 @@ fun CreateSecretSantaScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = "Participants (${state.participants.size})",
+                                text = stringResource(R.string.participants_title, state.participants.size),
+
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = ChristmasColors.White,
@@ -397,7 +415,8 @@ fun CreateSecretSantaScreen(
                                 ) {
                                     Icon(
                                         Icons.Default.Delete,
-                                        contentDescription = "Supprimer",
+                                        contentDescription = stringResource(R.string.delete),
+
                                         tint = ChristmasColors.AppButtonRed
                                     )
                                 }
@@ -467,7 +486,7 @@ fun CreateSecretSantaScreen(
                             ) {
                                 Text(text = "🎁", fontSize = 28.sp)
                                 Text(
-                                    text = "Créer le Secret Santa",
+                                    text = stringResource(R.string.create_secret_santa_button),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.ExtraBold
                                 )

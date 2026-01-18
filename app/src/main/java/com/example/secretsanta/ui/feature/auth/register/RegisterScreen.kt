@@ -84,7 +84,7 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Créer un compte",
+                        text = stringResource(R.string.register_title),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = ChristmasColors.AuthBackground
@@ -96,7 +96,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = state.displayName,
                         onValueChange = { viewModel.onEvent(RegisterEvent.DisplayNameChanged(it)) },
-                        label = { Text("Nom d'affichage") },
+                        label = { Text(stringResource(R.string.register_display_name_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !state.isLoading,
                         singleLine = true,
@@ -112,7 +112,8 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = state.email,
                         onValueChange = { viewModel.onEvent(RegisterEvent.EmailChanged(it)) },
-                        label = { Text("Email") },
+                        label = { Text(stringResource(R.string.register_email_hint)) },
+
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !state.isLoading,
                         singleLine = true,
@@ -128,7 +129,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = state.password,
                         onValueChange = { viewModel.onEvent(RegisterEvent.PasswordChanged(it)) },
-                        label = { Text("Mot de passe") },
+                        label = {  Text(stringResource(R.string.register_password_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -154,7 +155,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = state.confirmPassword,
                         onValueChange = { viewModel.onEvent(RegisterEvent.ConfirmPasswordChanged(it)) },
-                        label = { Text("Confirmer le mot de passe") },
+                        label = { Text(stringResource(R.string.register_confirm_password_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
@@ -216,7 +217,7 @@ fun RegisterScreen(
                         if (state.isLoading) {
                             CircularProgressIndicator(Modifier.size(24.dp), color = ChristmasColors.White, strokeWidth = 2.dp)
                         } else {
-                            Text("S'inscrire", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+                            Text(stringResource(R.string.register_button), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
                         }
                     }
 
@@ -224,7 +225,7 @@ fun RegisterScreen(
 
                     TextButton(onClick = onNavigateToLogin) {
                         Text(
-                            "Déjà un compte ?",
+                            stringResource(R.string.register_has_account),
                             color = ChristmasColors.AuthButtonRed,
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                         )

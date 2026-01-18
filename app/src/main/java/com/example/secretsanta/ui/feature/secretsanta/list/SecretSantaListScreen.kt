@@ -76,7 +76,7 @@ fun SecretSantaListScreen(
                     containerColor = ChristmasColors.AppButtonRed,
                     contentColor = ChristmasColors.White
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Créer")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.create))
                 }
             },
             containerColor = Color.Transparent
@@ -116,7 +116,7 @@ fun SecretSantaListScreen(
                                 )
                             ) {
                                 Text(
-                                    "Créer mon premier Secret Santa",
+                                    stringResource(R.string.create_first_secret_santa),
                                     color = ChristmasColors.White
                                 )
                             }
@@ -158,12 +158,12 @@ fun SecretSantaListScreen(
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
                                             Text(
-                                                text = "Date limite : ${formatDate(secretSanta.deadline)}",
+                                                text = stringResource(R.string.deadline_with_date, formatDate(secretSanta.deadline)),
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 color = MaterialTheme.colorScheme.onSurface
                                             )
                                             Text(
-                                                text = "${secretSanta.participants.size} participants",
+                                                text = stringResource(R.string.participants_count, secretSanta.participants.size),
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = ChristmasColors.AppBackground
                                             )

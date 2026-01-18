@@ -161,9 +161,14 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
+        Log.d("AuthRepository", "🔴 LOGOUT - Début")
         firebaseAuth.signOut()
+        Log.d("AuthRepository", "✅ Firebase signOut OK")
         userDao.clearAll()
+        Log.d("AuthRepository", "✅ Room clearAll OK")
         preferencesManager.clearUserData()
+        Log.d("AuthRepository", "✅ DataStore cleared OK")
+        Log.d("AuthRepository", "🟢 LOGOUT - Terminé avec succès")
     }
 
     override fun getCurrentUser(): Flow<User?> {

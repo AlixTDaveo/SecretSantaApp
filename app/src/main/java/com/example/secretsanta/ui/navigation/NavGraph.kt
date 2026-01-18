@@ -83,7 +83,7 @@ fun NavGraph(startDestination: String = Screen.Login.route) {
                     onNavigateToEdit = { navController.navigate(Screen.EditProfile.route) },
                     onLoggedOut = {
                         navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Profile.route) { inclusive = true }
+                            popUpTo(0) { inclusive = true }
                         }
                     }
                 )

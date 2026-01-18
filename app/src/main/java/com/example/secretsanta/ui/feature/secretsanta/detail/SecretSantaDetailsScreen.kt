@@ -101,16 +101,16 @@ fun SecretSantaDetailsScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
-                            "Détails du Secret Santa",
-                            fontWeight = FontWeight.Bold
-                        )
+                        Text(stringResource(R.string.secret_santa_details_title), fontWeight = FontWeight.Bold)
+
+
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 Icons.Default.ArrowBack,
-                                contentDescription = "Retour",
+                                contentDescription = stringResource(R.string.back),
+
                                 tint = ChristmasColors.White
                             )
                         }
@@ -120,7 +120,8 @@ fun SecretSantaDetailsScreen(
                             IconButton(onClick = { showDeleteDialog = true }) {
                                 Icon(
                                     Icons.Default.Delete,
-                                    contentDescription = "Supprimer",
+                                    contentDescription = stringResource(R.string.delete),
+
                                     tint = ChristmasColors.AppButtonRed
                                 )
                             }
@@ -297,7 +298,8 @@ fun SecretSantaDetailsScreen(
                                 ) {
                                     // Texte "Tirage non effectué"
                                     Text(
-                                        text = "⏳ Tirage non effectué",
+                                        text = stringResource(R.string.draw_not_done_label),
+
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = ChristmasColors.White,
@@ -329,8 +331,9 @@ fun SecretSantaDetailsScreen(
                                                 )
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 Text(
-                                                    "Effectuer le tirage au sort",
-                                                    fontSize = 16.sp,
+                                                    text = stringResource(R.string.perform_draw_button),
+
+                                                fontSize = 16.sp,
                                                     fontWeight = FontWeight.Bold,
                                                     color = ChristmasColors.AppButtonRed
                                                 )
@@ -386,7 +389,8 @@ fun SecretSantaDetailsScreen(
                                         }
                                         Spacer(modifier = Modifier.height(16.dp))
                                         Text(
-                                            text = "Vous offrez à :",
+                                            text = stringResource(R.string.you_give_to_label),
+
                                             style = MaterialTheme.typography.titleLarge,
                                             color = ChristmasColors.White.copy(alpha = 0.9f),
                                             fontWeight = FontWeight.Medium
@@ -410,7 +414,8 @@ fun SecretSantaDetailsScreen(
                                                 if (userId.isNullOrBlank()) {
                                                     // Affiche un message d'erreur si le userId est vide
                                                     viewModel.onEvent(
-                                                        SecretSantaDetailsEvent.ShowError("Ce participant n'a pas encore créé de compte")
+                                                        SecretSantaDetailsEvent.ShowError("PARTICIPANT_NO_ACCOUNT")
+
                                                     )
                                                 } else {
                                                     navController.navigate(Screen.UserWishlist.createRoute(santaId, userId))
@@ -428,8 +433,9 @@ fun SecretSantaDetailsScreen(
                                             ) {
                                                 Text(text = "🎁", fontSize = 24.sp)
                                                 Text(
-                                                    "Voir sa liste de souhaits",
-                                                    color = ChristmasColors.AppButtonRed,
+                                                    stringResource(R.string.view_wishlist_button),
+
+                                                            color = ChristmasColors.AppButtonRed,
                                                     fontWeight = FontWeight.ExtraBold,
                                                     fontSize = 16.sp
                                                 )
@@ -458,8 +464,9 @@ fun SecretSantaDetailsScreen(
                                                     tint = ChristmasColors.AppButtonRed
                                                 )
                                                 Text(
-                                                    "Lui envoyer un message",
-                                                    color = ChristmasColors.AppButtonRed,
+                                                    stringResource(R.string.send_message_to_person_button),
+
+                                                            color = ChristmasColors.AppButtonRed,
                                                     fontWeight = FontWeight.ExtraBold,
                                                     fontSize = 16.sp
                                                 )
@@ -496,8 +503,9 @@ fun SecretSantaDetailsScreen(
                                     tint = ChristmasColors.White
                                 )
                                 Text(
-                                    "Ma liste de cadeaux",
-                                    color = ChristmasColors.White,
+                                    stringResource(R.string.my_gift_list_button),
+
+                                            color = ChristmasColors.White,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp
                                 )
@@ -529,8 +537,9 @@ fun SecretSantaDetailsScreen(
                                     tint = ChristmasColors.White
                                 )
                                 Text(
-                                    "Voir le calendrier",
-                                    color = ChristmasColors.White,
+                                    stringResource(R.string.view_calendar_button),
+
+                                            color = ChristmasColors.White,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp
                                 )
@@ -546,7 +555,7 @@ fun SecretSantaDetailsScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = "Participants (${secretSanta.participants.size})",
+                                text = stringResource(R.string.participants_title, secretSanta.participants.size),
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = ChristmasColors.White,
@@ -626,7 +635,8 @@ fun SecretSantaDetailsScreen(
                                             shape = RoundedCornerShape(6.dp)
                                         ) {
                                             Text(
-                                                text = "Organisateur",
+                                                text = stringResource(R.string.organizer_badge),
+
                                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                                                 style = MaterialTheme.typography.labelSmall,
                                                 fontWeight = FontWeight.Bold,
@@ -642,7 +652,8 @@ fun SecretSantaDetailsScreen(
                                         shape = RoundedCornerShape(10.dp)
                                     ) {
                                         Text(
-                                            text = "Vous",
+                                            text = stringResource(R.string.you_badge),
+
                                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.Bold,
@@ -662,7 +673,8 @@ fun SecretSantaDetailsScreen(
                                     ) {
                                         Icon(
                                             Icons.Default.Delete,
-                                            contentDescription = "Supprimer",
+                                            contentDescription = stringResource(R.string.delete),
+
                                             tint = ChristmasColors.AppButtonRed
                                         )
                                     }
@@ -701,7 +713,8 @@ fun SecretSantaDetailsScreen(
                                     ) {
                                         Icon(
                                             Icons.Default.Close,
-                                            contentDescription = "Fermer",
+                                            contentDescription = stringResource(R.string.close),
+
                                             tint = ChristmasColors.White
                                         )
                                     }

@@ -94,7 +94,7 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Bienvenue sur Secret Santa",
+                        text = stringResource(R.string.login_title),
                         style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.Bold,
                             color = ChristmasColors.AuthBackground
@@ -107,7 +107,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = state.email,
                         onValueChange = { viewModel.onEvent(LoginEvent.EmailChanged(it)) },
-                        label = { Text("Email ou nom d'utilisateur") },
+                        label = { Text(stringResource(R.string.login_email_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = !state.isLoading,
                         singleLine = true,
@@ -124,7 +124,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = state.password,
                         onValueChange = { viewModel.onEvent(LoginEvent.PasswordChanged(it)) },
-                        label = { Text("Mot de passe") },
+                        label = { Text(stringResource(R.string.login_password_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         visualTransformation = if (passwordVisible)
                             VisualTransformation.None
@@ -184,7 +184,7 @@ fun LoginScreen(
                             )
                         } else {
                             Text(
-                                text = "Connexion",
+                                text = stringResource(R.string.login_button),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Bold
                                 )
@@ -197,7 +197,7 @@ fun LoginScreen(
                     // Lien inscription
                     TextButton(onClick = onNavigateToRegister) {
                         Text(
-                            text = "Pas de compte ? S'inscrire",
+                            text = stringResource(R.string.login_no_account),
                             color = ChristmasColors.AuthButtonRed,
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.Medium

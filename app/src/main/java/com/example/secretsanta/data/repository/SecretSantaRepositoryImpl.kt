@@ -45,6 +45,15 @@ class SecretSantaRepositoryImpl @Inject constructor(
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         Log.e("SecretSantaRepo", "❌ Listener error", error)
+
+                        // ✅ Gestion spécifique : si user déconnecté, on ferme proprement
+                        if (error.code == com.google.firebase.firestore.FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                            Log.w("SecretSantaRepo", "⚠️ User logged out, closing listener gracefully")
+                            trySend(emptyList())
+                            close()
+                            return@addSnapshotListener
+                        }
+
                         close(error)
                         return@addSnapshotListener
                     }
@@ -175,19 +184,29 @@ class SecretSantaRepositoryImpl @Inject constructor(
 
     override suspend fun deleteSecretSanta(santaId: String): Resource<Unit> {
         return try {
+            Log.d("SecretSantaRepo", "🗑️ Deleting Secret Santa: $santaId")
+
+            // Suppression Firestore
             firestore.collection("secret_santas")
                 .document(santaId)
                 .delete()
                 .await()
 
+            Log.d("SecretSantaRepo", "✅ Firestore document deleted")
+
+            // Suppression Room
             secretSantaDao.deleteSecretSanta(santaId)
+
+            Log.d("SecretSantaRepo", "✅ Local database cleared")
+            Log.d("SecretSantaRepo", "🟢 Secret Santa deleted successfully")
 
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Log.e("SecretSantaRepo", "Error deleting", e)
+            Log.e("SecretSantaRepo", "❌ Error deleting Secret Santa", e)
             Resource.Error(e.message ?: "Erreur de suppression")
         }
     }
+
 
     override suspend fun removeParticipant(santaId: String, participantId: String): Resource<Unit> {
         return try {

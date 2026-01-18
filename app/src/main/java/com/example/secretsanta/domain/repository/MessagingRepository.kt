@@ -24,4 +24,6 @@ interface MessagingRepository {
 
     suspend fun findUserIdByEmail(email: String): String?
 
+    suspend fun deleteConversationsBySecretSanta(secretSantaId: String): Resource<Unit>
+
 }
